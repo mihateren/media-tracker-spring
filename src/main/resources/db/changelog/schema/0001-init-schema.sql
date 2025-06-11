@@ -1,3 +1,16 @@
+-- types
+do $$ begin
+    create type pair_status as enum ('pending', 'active', 'archived');
+exception
+    when duplicate_object then null;
+end $$;
+
+do $$ begin
+    create type media_type as enum ('film', 'series');
+exception
+    when duplicate_object then null;
+end $$;
+
 --- users
 create table if not exists users
 (
@@ -7,8 +20,6 @@ create table if not exists users
 );
 
 --- pairs
-create type pair_status as enum ('pending', 'active', 'archived');
-
 create table if not exists pairs
 (
     pair_id        bigserial primary key,
@@ -20,8 +31,6 @@ create table if not exists pairs
 );
 
 --- media
-create type media_type as enum ('film', 'series');
-
 create table if not exists media
 (
     id           bigserial primary key,
