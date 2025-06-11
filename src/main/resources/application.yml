@@ -1,0 +1,22 @@
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:5432/media_tracker_pg
+    username: user
+    password: password
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+    jooq:
+      sql-dialect: POSTGRES
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog-master.yaml
+    default-schema: media_schema
+
+
+logging:
+  level:
+    org.jooq.tools.LoggerListener: DEBUG
+    org.jooq.tools.JDBCUtils: DEBUG
