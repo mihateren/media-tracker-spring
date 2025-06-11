@@ -24,20 +24,10 @@ create type media_type as enum ('film', 'series');
 
 create table if not exists media
 (
-    id         bigserial primary key,
-    type       media_type   not null,
-    title      varchar(200) not null,
-    cover_url  text
-);
-
---- media_info
-create table if not exists media_info
-(
-    media_id         bigint primary key references media (id) on delete cascade,
-    description      text,
-    kinopoisk_rating numeric(3,1) check (kinopoisk_rating between 0 and 10),
-    country          varchar(100),
-    year             smallint        check (year >= 1888)
+    id           bigserial primary key,
+    type         media_type   not null,
+    title        varchar(200) not null,
+    kinopoisk_id bigint      not null unique
 );
 
 --- genres
