@@ -25,9 +25,10 @@ val jooqVersion = "3.18.6"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     // logging
     runtimeOnly("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
