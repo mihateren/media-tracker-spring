@@ -22,18 +22,28 @@ repositories {
     mavenCentral()
 }
 
+extra["springCloudVersion"] = "2025.0.0"
+
 val jooqVersion = "3.18.6"
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
 
 dependencies {
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    runtimeOnly("io.github.oshai:kotlin-logging-jvm:7.0.7")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("ch.qos.logback:logback-classic:1.5.18")
 
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")

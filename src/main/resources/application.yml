@@ -20,8 +20,10 @@ logging:
   level:
     org.jooq.tools.LoggerListener: DEBUG
     org.jooq.tools.JDBCUtils: DEBUG
+    com.example.mediatracker.client.KinopoiskClient: DEBUG
+    feign.Logger: DEBUG
 
 hosts:
   kinopoisk:
-    url: https://kinopoiskapiunofficial.tech/api/v2.2
-    api-key: $KINOPOISK_API_KEY
+    url: https://kinopoiskapiunofficial.tech/
+    api-key: ${KINOPOISK_API_KEY}
