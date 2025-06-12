@@ -14,16 +14,26 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: media_schema
-
+  cloud:
+    openfeign.client:
+        config:
+          default:
+            loggerLevel: full
 
 logging:
   level:
     org.jooq.tools.LoggerListener: DEBUG
     org.jooq.tools.JDBCUtils: DEBUG
-    com.example.mediatracker.client.KinopoiskClient: DEBUG
+    com.example.mediatracker.external.KinopoiskClient: DEBUG
     feign.Logger: DEBUG
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
 
 hosts:
   kinopoisk:
-    url: https://kinopoiskapiunofficial.tech/
+    url: https://kinopoiskapiunofficial.tech
     api-key: ${KINOPOISK_API_KEY}

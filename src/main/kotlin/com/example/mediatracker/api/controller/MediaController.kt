@@ -1,6 +1,7 @@
 package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.MediaDto
+import com.example.mediatracker.external.dto.SearchResponse
 import com.example.mediatracker.service.MediaService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,6 +18,6 @@ class MediaController(
     fun getAllMedia(): List<MediaDto> = emptyList()
 
     @GetMapping(params = ["keyword"], path = ["/search"])
-    fun searchMedia(@RequestParam keyword: String): List<String> =
+    fun searchMedia(@RequestParam keyword: String): SearchResponse =
         mediaService.searchMedia(keyword)
 }

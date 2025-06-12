@@ -42,8 +42,11 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // Logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
     implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("io.github.openfeign:feign-slf4j")
 
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
