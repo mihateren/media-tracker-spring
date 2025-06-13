@@ -15,8 +15,12 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: media_schema
 
-
 logging:
   level:
     org.jooq.tools.LoggerListener: DEBUG
     org.jooq.tools.JDBCUtils: DEBUG
+
+hosts:
+  kinopoisk:
+    url: https://kinopoiskapiunofficial.tech
+    api-key: ${KINOPOISK_API_KEY}
