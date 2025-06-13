@@ -18,6 +18,5 @@ class MediaController(
     fun getAllMedia(): List<MediaDto> = emptyList()
 
     @GetMapping(params = ["keyword"], path = ["/search"])
-    fun searchMedia(@RequestParam keyword: String): SearchResponse =
-        mediaService.searchMedia(keyword)
+    fun searchMedia(@RequestParam keyword: String): SearchResponse = mediaService.searchMedia(keyword)
 }
