@@ -15,6 +15,10 @@ class KinopoiskFeignConfig (
     val props: KinopoiskProperties,
 ) {
 
+    // нужно для интерцептора логирования (отключаем дефолтное логгирование)
+    @Bean
+    fun feignLoggerLevel(): feign.Logger.Level = feign.Logger.Level.NONE
+
     @Bean
     fun feignLoggingInterceptor() = FeignLoggingInterceptor()
 
@@ -36,8 +40,5 @@ class KinopoiskFeignConfig (
     fun feignMethodHeader(): RequestInterceptor = RequestInterceptor { template ->
         template.header("X-FEIGN-METHOD", template.methodMetadata().configKey())
     }
-
-    @Bean
-    fun feignLoggerLevel(): feign.Logger.Level = feign.Logger.Level.NONE
 
 }
