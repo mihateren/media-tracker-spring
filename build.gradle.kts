@@ -38,6 +38,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.5.0")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -55,6 +56,9 @@ dependencies {
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
     jooqGenerator("org.jooq:jooq-meta-extensions:$jooqVersion")
+
+    // Security
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 }
 
 jooq {
