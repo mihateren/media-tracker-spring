@@ -38,6 +38,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -51,6 +53,10 @@ dependencies {
     // Logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
     implementation("ch.qos.logback:logback-classic:1.5.18")
+
+    // Db
+    implementation("org.liquibase:liquibase-core:4.32.0")
+    runtimeOnly("org.postgresql:postgresql:42.7.7")
 
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")

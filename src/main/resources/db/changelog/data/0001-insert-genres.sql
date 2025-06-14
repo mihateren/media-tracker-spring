@@ -1,6 +1,3 @@
---liquibase formatted sql
---changeset milkyway:0001-insert-genres
-
 insert into genres (title)
 values ('Боевик'),
        ('Приключения'),

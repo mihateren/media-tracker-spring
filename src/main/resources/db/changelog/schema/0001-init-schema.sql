@@ -1,22 +1,29 @@
 -- types
-do $$ begin
-    create type pair_status as enum ('pending', 'active', 'archived');
-exception
-    when duplicate_object then null;
-end $$;
+do
+$$
+    begin
+        create type pair_status as enum ('pending', 'active', 'archived');
+    exception
+        when duplicate_object then null;
+    end
+$$;
 
-do $$ begin
-    create type media_type as enum ('film', 'series');
-exception
-    when duplicate_object then null;
-end $$;
+do
+$$
+    begin
+        create type media_type as enum ('film', 'series');
+    exception
+        when duplicate_object then null;
+    end
+$$;
 
 --- users
 create table if not exists users
 (
-    id         bigserial primary key,
-    username   varchar(50) not null unique,
-    email      varchar(50) not null unique
+    id       bigserial primary key,
+    username varchar(50) not null unique,
+    email    varchar(50) not null unique,
+    password varchar(60) not null
 );
 
 --- pairs
@@ -36,29 +43,29 @@ create table if not exists media
     id           bigserial primary key,
     type         media_type   not null,
     title        varchar(200) not null,
-    kinopoisk_id bigint      not null unique
+    kinopoisk_id bigint       not null unique
 );
 
 --- genres
 create table if not exists genres
 (
-    id         bigserial primary key,
-    title      varchar(50) not null unique
+    id    bigserial primary key,
+    title varchar(50) not null unique
 );
 
 --- media_genres
 create table if not exists media_genres
 (
-    media_id   bigint not null references media  (id) on delete cascade,
-    genre_id   bigint not null references genres (id) on delete cascade,
+    media_id bigint not null references media (id) on delete cascade,
+    genre_id bigint not null references genres (id) on delete cascade,
     primary key (media_id, genre_id)
 );
 
 --- pair_media
 create table if not exists pair_media
 (
-    pair_id    bigint not null references pairs  (pair_id) on delete cascade,
-    media_id   bigint not null references media  (id)      on delete cascade,
+    pair_id    bigint    not null references pairs (pair_id) on delete cascade,
+    media_id   bigint    not null references media (id) on delete cascade,
     added_by   bigint references users (id),
     added_at   timestamp not null default now(),
     watched    boolean   not null default false,
