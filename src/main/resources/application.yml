@@ -26,6 +26,10 @@ logging:
     org.jooq.tools.LoggerListener: DEBUG
     org.jooq.tools.JDBCUtils: DEBUG
 
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  expiration-ms: 1_800_000
+
 hosts:
   kinopoisk:
     url: https://kinopoiskapiunofficial.tech

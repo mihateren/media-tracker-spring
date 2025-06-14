@@ -1,11 +1,10 @@
 package com.example.mediatracker.auth
 
 import com.example.mediatracker.service.JwtService
-import com.example.mediatracker.service.UserService
+import com.example.mediatracker.service.impl.UserService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -26,7 +25,7 @@ class JwtAuthFilter(
         val authHeader = request.getHeader("Authorization")
         val jwt = authHeader?.takeIf { it.startsWith("Bearer ") }?.substringAfter("Bearer ")
 
-        if (jwt != null && SecurityContextHolder.getContext().authentication != null) {
+        if (jwt != null && SecurityContextHolder.getContext().authentication == null) {
             val username = jwtService.extractUsername(jwt)
             if (username == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token")

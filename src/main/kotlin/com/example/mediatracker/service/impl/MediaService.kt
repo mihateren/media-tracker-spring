@@ -1,4 +1,4 @@
-package com.example.mediatracker.service
+package com.example.mediatracker.service.impl
 
 import com.example.mediatracker.external.KinopoiskClient
 import com.example.mediatracker.external.dto.SearchResponse
