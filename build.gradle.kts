@@ -39,7 +39,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-
+    implementation("org.springframework.boot:spring-boot-starter-security:3.5.0")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -57,6 +57,11 @@ dependencies {
     // Db
     implementation("org.liquibase:liquibase-core:4.32.0")
     runtimeOnly("org.postgresql:postgresql:42.7.7")
+
+    // Security
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
@@ -76,7 +81,7 @@ jooq {
                     database = org.jooq.meta.jaxb.Database().apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
                         properties = listOf(
-                            Property().withKey("scripts").withValue("src/main/resources/db/changelog/*.sql"),
+                            Property().withKey("scripts").withValue("src/main/resources/db/changelog/schema/*.sql"),
                             Property().withKey("sort").withValue("alphanumeric"),
                             Property().withKey("defaultNameCase").withValue("lower")
                         )
