@@ -8,12 +8,21 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
-    jooq:
-      sql-dialect: POSTGRES
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: media_schema
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ""
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  expiration:
+    access: 1800000
+    refresh: 604800000
 
 logging:
   level:

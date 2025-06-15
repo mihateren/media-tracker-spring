@@ -1,17 +1,14 @@
 package com.example.mediatracker.config
 
-import com.example.mediatracker.external.KinopoiskClient
 import com.example.mediatracker.external.props.KinopoiskProperties
 import com.example.mediatracker.logging.FeignLoggingInterceptor
-import feign.Logger
 import feign.RequestInterceptor
-import feign.slf4j.Slf4jLogger
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class KinopoiskFeignConfig (
+class FeignConfig (
     val props: KinopoiskProperties,
 ) {
 
