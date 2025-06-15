@@ -37,18 +37,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.5.0")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign") {
+        exclude(group = "javax.servlet")
+    }
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    // Feign
-    implementation("io.github.openfeign:feign-okhttp")
-    implementation("io.github.openfeign:feign-slf4j")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
