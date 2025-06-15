@@ -1,7 +1,7 @@
 package com.example.mediatracker.repository
 
-import com.example.jooq.generated.tables.references.USERS
 import com.example.mediatracker.domain.entity.User
+import com.example.jooq.generated.tables.references.USERS
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 

@@ -59,6 +59,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    implementation("io.github.openfeign:feign-okhttp")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // jOOQ DDL-based generation
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
