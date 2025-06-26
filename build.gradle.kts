@@ -2,8 +2,8 @@ import org.jooq.meta.jaxb.Logging
 import org.jooq.meta.jaxb.Property
 
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.spring") version "2.0.21"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("nu.studer.jooq") version "8.2.3"
@@ -24,7 +24,7 @@ repositories {
 
 extra["springCloudVersion"] = "2025.0.0"
 
-val jooqVersion = "3.18.6"
+val jooqVersion = "3.19.5"
 
 dependencyManagement {
     imports {
@@ -44,11 +44,12 @@ dependencies {
     }
 
     // Kotlin
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
     implementation("ch.qos.logback:logback-classic:1.5.18")
 
     // Db
@@ -94,4 +95,11 @@ jooq {
             }
         }
     }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "21"
+        languageVersion = "2.0"
+        apiVersion = "2.0"}
 }
