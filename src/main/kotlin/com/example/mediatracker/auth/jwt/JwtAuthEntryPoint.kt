@@ -1,4 +1,4 @@
-package com.example.mediatracker.auth
+package com.example.mediatracker.auth.jwt
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -12,8 +12,5 @@ class JwtAuthEntryPoint : AuthenticationEntryPoint {
         request: HttpServletRequest,
         response: HttpServletResponse,
         authException: AuthenticationException
-    ) {
-
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)
-    }
+    ) = response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.message)
 }

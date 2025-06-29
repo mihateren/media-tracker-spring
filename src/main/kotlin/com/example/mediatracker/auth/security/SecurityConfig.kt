@@ -1,19 +1,17 @@
-package com.example.mediatracker.config
+package com.example.mediatracker.auth.security
 
-import com.example.mediatracker.auth.JwtAuthEntryPoint
-import com.example.mediatracker.auth.JwtAuthFilter
+import com.example.mediatracker.auth.jwt.JwtAuthEntryPoint
+import com.example.mediatracker.auth.jwt.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.Customizer
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-
 
 @Configuration
 class SecurityConfig(

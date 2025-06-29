@@ -1,9 +1,13 @@
 import org.jooq.meta.jaxb.Logging
 import org.jooq.meta.jaxb.Property
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.spring") version "2.0.21"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.spring") version "2.2.0"
+    kotlin("kapt") version "2.2.0"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("nu.studer.jooq") version "8.2.3"
@@ -24,7 +28,8 @@ repositories {
 
 extra["springCloudVersion"] = "2025.0.0"
 
-val jooqVersion = "3.19.5"
+val jooqVersion = "3.20.5"
+val mapstructVersion = "1.5.5.Final"
 
 dependencyManagement {
     imports {
@@ -63,9 +68,13 @@ dependencies {
     implementation("io.github.openfeign:feign-okhttp")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    // jOOQ DDL-based generation
-    jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
+    // Jooq
+    implementation("org.jooq:jooq:$jooqVersion")
     jooqGenerator("org.jooq:jooq-meta-extensions:$jooqVersion")
+
+    // Mapstruct
+    implementation("org.mapstruct:mapstruct:$mapstructVersion")
+    kapt("org.mapstruct:mapstruct-processor:$mapstructVersion")
 }
 
 jooq {
@@ -77,6 +86,13 @@ jooq {
                 logging = Logging.WARN
                 generator.apply {
                     name = "org.jooq.codegen.KotlinGenerator"
+
+                    generate = org.jooq.meta.jaxb.Generate().apply {
+                        isPojos = true
+                        isDaos = true
+                        isSpringAnnotations = true
+                        isSpringDao = true
+                    }
 
                     database = org.jooq.meta.jaxb.Database().apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
@@ -97,9 +113,10 @@ jooq {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "21"
-        languageVersion = "2.0"
-        apiVersion = "2.0"}
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+        languageVersion.set(KotlinVersion.KOTLIN_2_2)
+        apiVersion.set(KotlinVersion.KOTLIN_2_2)
+    }
 }

@@ -1,43 +1,29 @@
 package com.example.mediatracker.repository
 
+import com.example.jooq.generated.tables.daos.UsersDao
+import com.example.jooq.generated.tables.pojos.Users as UsersPojo
 import com.example.mediatracker.domain.entity.User
-import com.example.jooq.generated.tables.references.USERS
-import org.jooq.DSLContext
+import com.example.mediatracker.mapper.UserMapper
 import org.springframework.stereotype.Repository
 
 @Repository
 class UserRepository(
-    val dslContext: DSLContext,
+    private val usersDao: UsersDao,
+    private val mapper: UserMapper
 ) {
 
-    fun findByUsername(username: String): User? {
-        return dslContext
-            .selectFrom(USERS)
-            .where(USERS.USERNAME.eq(username))
-            .fetchOneInto(User::class.java)
-    }
+    fun findByUsername(username: String): User? =
+        usersDao.fetchOneByUsername(username)?.let(mapper::toDomain)
 
-    fun save(user: User): User {
-        return if (user.id == 0L) {
-            val record = dslContext.insertInto(USERS)
-                .set(USERS.USERNAME, user.username)
-                .set(USERS.EMAIL, user.email)
-                .set(USERS.PASSWORD, user.password)
-                .returning(USERS.ID)
-                .fetchOne()!!
+    fun findById(id: Long): User? =
+        usersDao.fetchOneById(id)?.let(mapper::toDomain)
 
-            val generatedId: Long = record.id
-                ?: error("Не удалось получить сгенерированный ID")
-
-            user.copy(id = generatedId)
+    fun save(user: User): User =
+        if (user.id == 0L) {
+            usersDao.insert(mapper.toPojoNew(user))
+            mapper.toDomain(usersDao.fetchOneByUsername(user.username)!!)
         } else {
-            dslContext.update(USERS)
-                .set(USERS.EMAIL, user.email)
-                .set(USERS.PASSWORD, user.password)
-                .where(USERS.ID.eq(user.id))
-                .execute()
+            usersDao.update(mapper.toPojoExisting(user))
             user
         }
-    }
-
 }

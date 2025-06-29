@@ -1,0 +1,16 @@
+package com.example.mediatracker.config
+
+import com.example.jooq.generated.tables.daos.UsersDao
+import org.jooq.DSLContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+
+@Configuration
+class DaoConfig(
+    private val dslContext: DSLContext
+) {
+
+    @Bean
+    fun usersDao() = UsersDao(dslContext.configuration())
+
+}

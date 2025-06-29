@@ -1,8 +1,6 @@
-package com.example.mediatracker.service
+package com.example.mediatracker.auth.security
 
 import com.example.mediatracker.repository.UserRepository
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -10,12 +8,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomUserDetailsService(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String): UserDetails {
-        return userRepository.findByUsername(username)
+    override fun loadUserByUsername(username: String): UserDetails =
+        userRepository.findByUsername(username)
+            ?.let(::UserPrincipal)
             ?: throw UsernameNotFoundException("User '$username' not found")
-    }
-
 }
