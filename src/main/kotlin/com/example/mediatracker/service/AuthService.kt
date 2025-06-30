@@ -45,7 +45,7 @@ class AuthService(
     }
 
     fun login(request: LoginRequest): LoginResponse {
-        val user = userRepository.findByUsername(request.username)
+        val user = userRepository.findByEmail(request.email)
             ?: throw InvalidCredentialsException()
 
         if (!passwordEncoder.matches(request.password, user.passwordHash))

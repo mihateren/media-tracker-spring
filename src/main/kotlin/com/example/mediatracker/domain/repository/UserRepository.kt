@@ -12,11 +12,11 @@ class UserRepository(
     private val mapper: UserMapper
 ) {
 
+    fun findByEmail(email: String): User? =
+        usersDao.fetchOneByEmail(email)?.let(mapper::toDomain)
+
     fun findByUsername(username: String): User? =
         usersDao.fetchOneByUsername(username)?.let(mapper::toDomain)
-
-    fun findById(id: Long): User? =
-        usersDao.fetchOneById(id)?.let(mapper::toDomain)
 
     fun save(user: User): User =
         if (user.id == 0L) {
