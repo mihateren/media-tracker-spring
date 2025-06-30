@@ -27,9 +27,6 @@ class OpenApiConfig {
                     .description("Сервис для трекинга фильмов и сериалов")
 
             )
-            .addSecurityItem(
-                SecurityRequirement().addList("bearerAuth")
-            )
     }
 
 }

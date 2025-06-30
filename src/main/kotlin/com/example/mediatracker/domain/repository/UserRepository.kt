@@ -1,4 +1,4 @@
-package com.example.mediatracker.repository
+package com.example.mediatracker.domain.repository
 
 import com.example.jooq.generated.tables.daos.UsersDao
 import com.example.jooq.generated.tables.pojos.Users as UsersPojo
@@ -26,4 +26,10 @@ class UserRepository(
             usersDao.update(mapper.toPojoExisting(user))
             user
         }
+
+    fun existByUsername(username: String): Boolean =
+        usersDao.fetchOneByUsername(username) != null
+
+    fun existByEmail(email: String): Boolean =
+        usersDao.fetchOneByEmail(email) != null
 }
