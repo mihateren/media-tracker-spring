@@ -1,21 +1,14 @@
 -- types
-do
-$$
-    begin
-        create type pair_status as enum ('pending', 'active', 'archived');
-    exception
-        when duplicate_object then null;
-    end
-$$;
+CREATE TYPE pair_status AS ENUM (
+    'pending',
+    'active',
+    'archived'
+);
 
-do
-$$
-    begin
-        create type media_type as enum ('film', 'series');
-    exception
-        when duplicate_object then null;
-    end
-$$;
+CREATE TYPE media_type AS ENUM (
+    'film',
+    'series'
+);
 
 --- users
 create table if not exists users

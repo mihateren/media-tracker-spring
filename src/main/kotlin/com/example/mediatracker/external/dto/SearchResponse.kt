@@ -7,7 +7,6 @@ data class SearchResponse(
     val pagesCount: Int,
     val films: List<Film>
 ) {
-    /** Информация о фильме */
     data class Film(
         val filmId: Long,
         val nameRu: String?,
