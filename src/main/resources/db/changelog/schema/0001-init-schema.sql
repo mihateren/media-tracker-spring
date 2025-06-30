@@ -3,12 +3,12 @@ CREATE TYPE pair_status AS ENUM (
     'pending',
     'active',
     'archived'
-);
+    );
 
 CREATE TYPE media_type AS ENUM (
     'film',
     'series'
-);
+    );
 
 --- users
 create table if not exists users
@@ -18,6 +18,18 @@ create table if not exists users
     email    varchar(50) not null unique,
     password varchar(60) not null
 );
+
+--- users profiles
+create table if not exists users_profiles
+(
+    user_id    BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    avatar_url TEXT CHECK (avatar_url LIKE 'http://%' OR avatar_url LIKE 'https://%'),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ,
+    enabled    boolean     not null default true
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_profiles_enabled ON users_profiles (enabled);
 
 --- pairs
 create table if not exists pairs
