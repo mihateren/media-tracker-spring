@@ -7,7 +7,7 @@ data class RegistrationRequest(
 
     @field:Schema(
         description = "Уникальное имя пользователя",
-        example = "pivo"
+        example = "pivo123"
     )
     @field:NotBlank
     @field:Size(min = 6, max = 50, message = "Длина username — от 6 до 50 символов")
@@ -15,13 +15,13 @@ data class RegistrationRequest(
 
     @field:Schema(
         description = "Пароль (мин. 8 символов, буквы и цифры)",
-        example = "Passw0rd!"
+        example = "Password123"
     )
     @field:NotBlank
     @field:Size(min = 8, max = 64, message = "Пароль должен быть от 8 до 64 символов")
     @field:Pattern(
         regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$",
-        message = "Пароль может содержать только буквы или цифры"
+        message = "Пароль может содержать только буквы латинского алфавита или цифры"
     )
     val password: String,
 

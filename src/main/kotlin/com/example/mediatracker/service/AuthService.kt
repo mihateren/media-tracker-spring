@@ -7,13 +7,14 @@ import com.example.mediatracker.api.dto.auth.refresh.RefreshResponse
 import com.example.mediatracker.api.dto.auth.registration.RegistrationRequest
 import com.example.mediatracker.auth.jwt.JwtService
 import com.example.mediatracker.domain.entity.User
+import com.example.mediatracker.domain.entity.UserProfile
+import com.example.mediatracker.domain.repository.UserProfilesRepository
 import com.example.mediatracker.logging.Logging
 import com.example.mediatracker.domain.repository.UserRepository
 import com.example.mediatracker.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.exception.entity.InvalidTokenException
 import com.example.mediatracker.exception.entity.UserAlreadyExistsException
 import com.example.mediatracker.exception.entity.UserNotFoundException
-import jakarta.security.auth.message.AuthException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,24 +24,29 @@ class AuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
+    private val userProfilesRepository: UserProfilesRepository,
 ) : Logging {
 
     @Transactional
     fun registration(request: RegistrationRequest) {
 
-        if (userRepository.existByUsername(request.username)) {
-            throw UserAlreadyExistsException("Username '${request.username}' is already registered")
+        if (userRepository.existsByUsername(request.username)) {
+            throw UserAlreadyExistsException("Username '${request.username}' уже зарегистрирован")
         }
-        if (userRepository.existByEmail(request.email)) {
-            throw UserAlreadyExistsException("Email '${request.email}' is already registered")
+        if (userRepository.existsByEmail(request.email)) {
+            throw UserAlreadyExistsException("Email '${request.email}' уже зарегистрирован")
         }
 
-        userRepository.save(
+        val user = userRepository.save(
             User(
                 username = request.username,
                 email = request.email,
                 passwordHash = passwordEncoder.encode(request.password),
             )
+        )
+        log.info { "User ${user} saved in database" }
+        userProfilesRepository.save(
+            UserProfile(userId = user.id!!)
         )
     }
 

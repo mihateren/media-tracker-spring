@@ -1,35 +1,34 @@
 package com.example.mediatracker.domain.repository
 
 import com.example.jooq.generated.tables.daos.UsersDao
-import com.example.jooq.generated.tables.pojos.Users as UsersPojo
 import com.example.mediatracker.domain.entity.User
-import com.example.mediatracker.mapper.UserMapper
+import com.example.mediatracker.domain.mapper.UserMapper
 import org.springframework.stereotype.Repository
 
 @Repository
 class UserRepository(
-    private val usersDao: UsersDao,
+    private val dao: UsersDao,
     private val mapper: UserMapper
 ) {
 
-    fun findByEmail(email: String): User? =
-        usersDao.fetchOneByEmail(email)?.let(mapper::toDomain)
+    fun save(user: User): User {
+        val pojo = mapper.toPojo(user)
 
-    fun findByUsername(username: String): User? =
-        usersDao.fetchOneByUsername(username)?.let(mapper::toDomain)
-
-    fun save(user: User): User =
-        if (user.id == 0L) {
-            usersDao.insert(mapper.toPojoNew(user))
-            mapper.toDomain(usersDao.fetchOneByUsername(user.username)!!)
+        return if (user.id == null) {
+            dao.insert(pojo)
+            mapper.toDomain(pojo)
         } else {
-            usersDao.update(mapper.toPojoExisting(user))
+            dao.update(pojo)
             user
         }
+    }
 
-    fun existByUsername(username: String): Boolean =
-        usersDao.fetchOneByUsername(username) != null
+    fun findByEmail(email: String): User? =
+        dao.fetchOneByEmail(email)?.let(mapper::toDomain)
 
-    fun existByEmail(email: String): Boolean =
-        usersDao.fetchOneByEmail(email) != null
+    fun findByUsername(username: String): User? =
+        dao.fetchOneByUsername(username)?.let(mapper::toDomain)
+
+    fun existsByUsername(username: String) = dao.fetchOneByUsername(username) != null
+    fun existsByEmail(email: String) = dao.fetchOneByEmail(email) != null
 }

@@ -1,6 +1,7 @@
 package com.example.mediatracker.config
 
 import com.example.jooq.generated.tables.daos.UsersDao
+import com.example.jooq.generated.tables.daos.UsersProfilesDao
 import org.jooq.DSLContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,5 +13,8 @@ class DaoConfig(
 
     @Bean
     fun usersDao() = UsersDao(dslContext.configuration())
+
+    @Bean
+    fun usersProfilesDao() = UsersProfilesDao(dslContext.configuration())
 
 }

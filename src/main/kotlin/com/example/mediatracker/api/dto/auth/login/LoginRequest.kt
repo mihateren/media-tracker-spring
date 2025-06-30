@@ -18,13 +18,13 @@ data class LoginRequest(
 
     @field:Schema(
         description = "Пароль (мин. 8 символов, буквы и цифры)",
-        example = "Passw0rd!"
+        example = "Password123"
     )
     @field:NotBlank
     @field:Size(min = 8, max = 64, message = "Пароль должен быть от 8 до 64 символов")
     @field:Pattern(
         regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$",
-        message = "Пароль должен содержать хотя бы одну букву и одну цифру"
+        message = "Пароль может содержать только буквы латинского алфавита или цифры"
     )
     val password: String
 ) {
