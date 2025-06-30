@@ -5,7 +5,6 @@ import com.example.mediatracker.api.dto.auth.login.LoginResponse
 import com.example.mediatracker.api.dto.auth.refresh.RefreshRequest
 import com.example.mediatracker.api.dto.auth.refresh.RefreshResponse
 import com.example.mediatracker.api.dto.auth.registration.RegistrationRequest
-import com.example.mediatracker.api.dto.auth.registration.RegistrationResponse
 import com.example.mediatracker.auth.jwt.JwtService
 import com.example.mediatracker.domain.entity.User
 import com.example.mediatracker.logging.Logging
@@ -27,7 +26,7 @@ class AuthService(
 ) : Logging {
 
     @Transactional
-    fun registration(request: RegistrationRequest): RegistrationResponse {
+    fun registration(request: RegistrationRequest) {
 
         if (userRepository.existByUsername(request.username)) {
             throw UserAlreadyExistsException("Username '${request.username}' is already registered")
@@ -43,7 +42,6 @@ class AuthService(
                 passwordHash = passwordEncoder.encode(request.password),
             )
         )
-        return RegistrationResponse("successfully registered")
     }
 
     fun login(request: LoginRequest): LoginResponse {
