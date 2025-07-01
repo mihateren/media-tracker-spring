@@ -21,8 +21,9 @@ jwt:
 
 logging:
   level:
-    org.jooq.tools.LoggerListener: DEBUG
-    org.jooq.tools.JDBCUtils: DEBUG
+    org.jooq.tools.LoggerListener: ERROR
+    org.jooq.tools.JDBCUtils: ERROR
+    org.jooq.Constants: ERROR
 
 hosts:
   kinopoisk:
