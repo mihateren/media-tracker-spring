@@ -1,7 +1,10 @@
-package com.example.mediatracker.exception.handler
+package com.example.mediatracker.common.exception.handler
 
-import com.example.mediatracker.exception.dto.ErrorResponse
-import com.example.mediatracker.exception.entity.*
+import com.example.mediatracker.common.exception.dto.ErrorResponse
+import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
+import com.example.mediatracker.common.exception.entity.InvalidTokenException
+import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
+import com.example.mediatracker.common.exception.entity.UserNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError

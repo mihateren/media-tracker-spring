@@ -1,4 +1,4 @@
-package com.example.mediatracker.logging
+package com.example.mediatracker.common.logging
 
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging

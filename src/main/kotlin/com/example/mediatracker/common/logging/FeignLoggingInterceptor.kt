@@ -1,4 +1,4 @@
-package com.example.mediatracker.logging
+package com.example.mediatracker.common.logging
 
 import okhttp3.Interceptor
 import okhttp3.Response

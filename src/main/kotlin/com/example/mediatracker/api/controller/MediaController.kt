@@ -1,7 +1,7 @@
 package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.MediaDto
-import com.example.mediatracker.constants.SecurityConstants
+import com.example.mediatracker.common.constants.SecurityConstants
 import com.example.mediatracker.external.dto.SearchResponse
 import com.example.mediatracker.service.MediaService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement

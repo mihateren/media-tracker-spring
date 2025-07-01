@@ -1,4 +1,4 @@
-package com.example.mediatracker.mapper
+package com.example.mediatracker.common.mapper
 
 import com.example.jooq.generated.tables.pojos.Users as UsersPojo
 import com.example.mediatracker.domain.entity.User

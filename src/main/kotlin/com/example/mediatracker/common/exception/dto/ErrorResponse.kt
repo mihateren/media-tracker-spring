@@ -1,4 +1,4 @@
-package com.example.mediatracker.exception.dto
+package com.example.mediatracker.common.exception.dto
 
 import org.springframework.http.HttpStatus
 

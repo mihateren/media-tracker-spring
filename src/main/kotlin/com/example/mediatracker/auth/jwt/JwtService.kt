@@ -1,11 +1,10 @@
 package com.example.mediatracker.auth.jwt
 
 import com.example.mediatracker.auth.jwt.props.JwtProperties
-import com.example.mediatracker.logging.Logging
+import com.example.mediatracker.common.logging.Logging
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
-import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
 import java.time.Duration
