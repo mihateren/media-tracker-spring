@@ -1,4 +1,4 @@
-package com.example.mediatracker.auth.security
+package com.example.mediatracker.common.auth.security
 
 import com.example.mediatracker.domain.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails

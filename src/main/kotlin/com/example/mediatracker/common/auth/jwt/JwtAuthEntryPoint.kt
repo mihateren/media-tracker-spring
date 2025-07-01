@@ -1,4 +1,4 @@
-package com.example.mediatracker.auth.jwt
+package com.example.mediatracker.common.auth.jwt
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

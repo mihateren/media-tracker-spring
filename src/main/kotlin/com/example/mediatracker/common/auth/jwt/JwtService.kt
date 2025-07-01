@@ -1,6 +1,6 @@
-package com.example.mediatracker.auth.jwt
+package com.example.mediatracker.common.auth.jwt
 
-import com.example.mediatracker.auth.jwt.props.JwtProperties
+import com.example.mediatracker.common.auth.jwt.props.JwtProperties
 import com.example.mediatracker.common.logging.Logging
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts

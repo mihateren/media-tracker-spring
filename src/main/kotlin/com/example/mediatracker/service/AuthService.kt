@@ -5,7 +5,7 @@ import com.example.mediatracker.api.dto.auth.login.LoginResponse
 import com.example.mediatracker.api.dto.auth.refresh.RefreshRequest
 import com.example.mediatracker.api.dto.auth.refresh.RefreshResponse
 import com.example.mediatracker.api.dto.auth.registration.RegistrationRequest
-import com.example.mediatracker.auth.jwt.JwtService
+import com.example.mediatracker.common.auth.jwt.JwtService
 import com.example.mediatracker.domain.entity.User
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.domain.repository.UserRepository

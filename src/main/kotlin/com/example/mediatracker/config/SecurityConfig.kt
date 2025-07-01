@@ -1,7 +1,7 @@
-package com.example.mediatracker.auth.security
+package com.example.mediatracker.config
 
-import com.example.mediatracker.auth.jwt.JwtAuthEntryPoint
-import com.example.mediatracker.auth.jwt.JwtAuthFilter
+import com.example.mediatracker.common.auth.jwt.JwtAuthEntryPoint
+import com.example.mediatracker.common.auth.jwt.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
