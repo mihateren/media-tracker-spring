@@ -5,7 +5,7 @@ import com.example.mediatracker.api.dto.auth.LoginResponse
 import com.example.mediatracker.api.dto.auth.RefreshRequest
 import com.example.mediatracker.api.dto.auth.RefreshResponse
 import com.example.mediatracker.api.dto.auth.RegistrationRequest
-import com.example.mediatracker.common.auth.jwt.JwtService
+import com.example.mediatracker.service.JwtService
 import com.example.mediatracker.domain.entity.User
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.domain.repository.UserRepository
@@ -55,8 +55,8 @@ class AuthService(
             throw InvalidCredentialsException()
 
         return LoginResponse(
-            accessToken = jwtService.generateAccessToken(user.username),
-            refreshToken = jwtService.generateRefreshToken(user.username)
+            accessToken = jwtService.generateAccessToken(user),
+            refreshToken = jwtService.generateRefreshToken(user)
         )
     }
 
@@ -68,7 +68,7 @@ class AuthService(
             ?: throw UserNotFoundException()
 
         return RefreshResponse(
-            accessToken = jwtService.generateAccessToken(user.username)
+            accessToken = jwtService.generateAccessToken(user)
         )
     }
 

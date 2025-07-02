@@ -1,7 +1,8 @@
-package com.example.mediatracker.common.auth.jwt
+package com.example.mediatracker.service
 
-import com.example.mediatracker.common.auth.jwt.props.JwtProperties
 import com.example.mediatracker.common.logging.Logging
+import com.example.mediatracker.common.props.JwtProperties
+import com.example.mediatracker.domain.entity.User
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Date
 
 @Service
 class JwtService(
@@ -26,14 +27,16 @@ class JwtService(
     private val key = Keys.hmacShaKeyFor(props.secret.toByteArray(StandardCharsets.UTF_8))
 
 
-    fun generateAccessToken(username: String) =
-        buildToken(username, Duration.ofMinutes(props.expiration.accessMin), TYPE_ACCESS)
+    fun generateAccessToken(user: User) =
+        buildToken(user, Duration.ofMinutes(props.expiration.accessMin), TYPE_ACCESS)
 
-    fun generateRefreshToken(username: String) =
-        buildToken(username, Duration.ofDays(props.expiration.refreshDays), TYPE_REFRESH)
+    fun generateRefreshToken(user: User) =
+        buildToken(user, Duration.ofDays(props.expiration.refreshDays), TYPE_REFRESH)
 
     fun extractUsername(token: String): String =
-        parse(token).subject
+        parse(token).get("username", String::class.java)
+
+    fun extractUserId(token: String): Long = parse(token).subject.toLong()
 
     fun validateAccessToken(token: String): Boolean =
         validate(token, expectedType = TYPE_ACCESS)
@@ -42,11 +45,12 @@ class JwtService(
         validate(token, expectedType = TYPE_REFRESH)
 
 
-    private fun buildToken(username: String, ttl: Duration, type: String): String {
+    private fun buildToken(user: User, ttl: Duration, type: String): String {
         val now = Instant.now()
         return Jwts.builder()
-            .subject(username)
+            .subject(user.id.toString())
             .claim(CLAIM_TYPE, type)
+            .claim("username", user.username)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(ttl)))
             .signWith(key, Jwts.SIG.HS512)

@@ -1,4 +1,4 @@
-package com.example.mediatracker.common.auth.security
+package com.example.mediatracker.common.auth
 
 import com.example.mediatracker.domain.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
@@ -14,5 +14,5 @@ class AuthUserDetailsService(
     override fun loadUserByUsername(username: String): UserDetails =
         userRepository.findByUsername(username)
             ?.let(::AuthUserDetails)
-            ?: throw UsernameNotFoundException("User '$username' not found")
+            ?: throw UsernameNotFoundException("User with username '$username' not found")
 }

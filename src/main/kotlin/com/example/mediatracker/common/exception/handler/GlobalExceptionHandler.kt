@@ -1,6 +1,7 @@
 package com.example.mediatracker.common.exception.handler
 
 import com.example.mediatracker.common.exception.dto.ErrorResponse
+import com.example.mediatracker.common.exception.entity.EntityNotFoundException
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
-    private fun build(status: HttpStatus, message: String?): ResponseEntity<ErrorResponse> =
+    private fun buildErrorMessage(status: HttpStatus, message: String?): ResponseEntity<ErrorResponse> =
         ResponseEntity(
             ErrorResponse(
                 status = status.value(),
@@ -27,18 +28,18 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException::class)
     fun handleUserExists(ex: UserAlreadyExistsException) =
-        build(HttpStatus.CONFLICT, ex.message)
+        buildErrorMessage(HttpStatus.CONFLICT, ex.message)
 
     @ExceptionHandler(UserNotFoundException::class)
     fun handleUser404(ex: UserNotFoundException) =
-        build(HttpStatus.NOT_FOUND, ex.message)
+        buildErrorMessage(HttpStatus.NOT_FOUND, ex.message)
 
     @ExceptionHandler(
         InvalidCredentialsException::class,
         InvalidTokenException::class
     )
     fun handleUnauthorized(ex: RuntimeException) =
-        build(HttpStatus.UNAUTHORIZED, ex.message)
+        buildErrorMessage(HttpStatus.UNAUTHORIZED, ex.message)
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
@@ -47,7 +48,11 @@ class GlobalExceptionHandler {
             .filterIsInstance<FieldError>()
             .joinToString("; ") { "${it.field}: ${it.defaultMessage}" }
 
-        return build(HttpStatus.BAD_REQUEST, details)
+        return buildErrorMessage(HttpStatus.BAD_REQUEST, details)
     }
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    fun handleEntityNotFound(ex: EntityNotFoundException) =
+        buildErrorMessage(HttpStatus.NOT_FOUND, ex.message)
 
 }

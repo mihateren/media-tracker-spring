@@ -1,4 +1,4 @@
-package com.example.mediatracker.common.auth.jwt.props
+package com.example.mediatracker.common.props
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

@@ -1,4 +1,4 @@
-package com.example.mediatracker.common.auth.security
+package com.example.mediatracker.common.auth
 
 import com.example.mediatracker.domain.entity.User
 import org.springframework.security.core.GrantedAuthority
@@ -13,8 +13,8 @@ class AuthUserDetails(private val user: User) : UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> =
         listOf(SimpleGrantedAuthority("ROLE_USER"))
 
-    override fun isAccountNonExpired()  = true
-    override fun isAccountNonLocked()   = true
+    override fun isAccountNonExpired() = true
+    override fun isAccountNonLocked() = true
     override fun isCredentialsNonExpired() = true
-    override fun isEnabled()            = true
+    override fun isEnabled() = true
 }

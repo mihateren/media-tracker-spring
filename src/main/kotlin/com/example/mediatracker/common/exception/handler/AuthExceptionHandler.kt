@@ -1,4 +1,4 @@
-package com.example.mediatracker.common.auth.jwt
+package com.example.mediatracker.common.exception.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -7,7 +7,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.stereotype.Component
 
 @Component
-class JwtAuthEntryPoint : AuthenticationEntryPoint {
+class AuthExceptionHandler : AuthenticationEntryPoint {
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
