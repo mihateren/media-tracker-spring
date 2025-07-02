@@ -99,7 +99,11 @@ jooq {
                         properties = listOf(
                             Property().withKey("scripts").withValue("src/main/resources/db/changelog/schema/*.sql"),
                             Property().withKey("sort").withValue("alphanumeric"),
-                            Property().withKey("defaultNameCase").withValue("lower")
+                            Property().withKey("defaultNameCase").withValue("lower"),
+
+                            Property().withKey("parseIgnoreComments").withValue("true"),
+                            Property().withKey("parseIgnoreCommentStart").withValue("[jooq ignore start]"),
+                            Property().withKey("parseIgnoreCommentStop").withValue("[jooq ignore stop]")
                         )
                     }
 
