@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.util.ContentCachingRequestWrapper
@@ -17,7 +18,18 @@ import java.util.concurrent.TimeUnit
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class ApiLoggingFilter : OncePerRequestFilter() {
 
+    private val mvc = PathPatternRequestMatcher.withDefaults()
+    private val excluded = listOf(
+        mvc.matcher("/swagger-ui/**"),
+        mvc.matcher("/v3/api-docs/**"),
+        mvc.matcher("/swagger-resources/**"),
+        mvc.matcher("/webjars/**")
+    )
+
     private val log = LoggerFactory.getLogger(ApiLoggingFilter::class.java)
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
+        excluded.any { it.matches(request) }
 
     override fun doFilterInternal(
         request: HttpServletRequest,

@@ -13,6 +13,7 @@ import com.example.mediatracker.common.exception.entity.InvalidCredentialsExcept
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
+import com.example.mediatracker.domain.entity.UserProfile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +23,6 @@ class AuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
-    private val userProfilesRepository: UserProfilesRepository,
 ) : Logging {
 
     @Transactional
@@ -42,8 +42,7 @@ class AuthService(
                 passwordHash = passwordEncoder.encode(request.password),
             )
         )
-        log.info { "User ${user} saved in database" }
-        userProfilesRepository.save(
+        userRepository.saveProfile(
             UserProfile(userId = user.id!!)
         )
     }
