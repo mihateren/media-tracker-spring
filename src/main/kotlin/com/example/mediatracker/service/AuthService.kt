@@ -22,29 +22,34 @@ class AuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
+    private val userProfilesRepository: UserProfilesRepository,
 ) : Logging {
 
     @Transactional
     fun registration(request: RegistrationRequest) {
 
-        if (userRepository.existByUsername(request.username)) {
-            throw UserAlreadyExistsException("Username '${request.username}' is already registered")
+        if (userRepository.existsByUsername(request.username)) {
+            throw UserAlreadyExistsException("Username '${request.username}' уже зарегистрирован")
         }
-        if (userRepository.existByEmail(request.email)) {
-            throw UserAlreadyExistsException("Email '${request.email}' is already registered")
+        if (userRepository.existsByEmail(request.email)) {
+            throw UserAlreadyExistsException("Email '${request.email}' уже зарегистрирован")
         }
 
-        userRepository.save(
+        val user = userRepository.save(
             User(
                 username = request.username,
                 email = request.email,
                 passwordHash = passwordEncoder.encode(request.password),
             )
         )
+        log.info { "User ${user} saved in database" }
+        userProfilesRepository.save(
+            UserProfile(userId = user.id!!)
+        )
     }
 
     fun login(request: LoginRequest): LoginResponse {
-        val user = userRepository.findByUsername(request.username)
+        val user = userRepository.findByEmail(request.email)
             ?: throw InvalidCredentialsException()
 
         if (!passwordEncoder.matches(request.password, user.passwordHash))

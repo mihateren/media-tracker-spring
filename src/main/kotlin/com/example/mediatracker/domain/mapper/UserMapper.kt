@@ -7,17 +7,13 @@ import org.mapstruct.*
 @Mapper(
     componentModel = "spring",
     nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
-    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_DEFAULT
 )
 interface UserMapper {
 
     @Mapping(target = "passwordHash", source = "password")
     fun toDomain(pojo: UsersPojo): User
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "passwordHash")
-    fun toPojoNew(user: User): UsersPojo
+    fun toPojo(user: User): UsersPojo
 
-    @Mapping(target = "password", source = "passwordHash")
-    fun toPojoExisting(user: User): UsersPojo
 }
