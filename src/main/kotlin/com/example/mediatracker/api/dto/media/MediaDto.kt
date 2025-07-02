@@ -1,4 +1,4 @@
-package com.example.mediatracker.api.dto
+package com.example.mediatracker.api.dto.media
 
 data class MediaDto(
     val title: String,

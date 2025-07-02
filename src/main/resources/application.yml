@@ -13,6 +13,11 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: media_schema
 
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: method
+
 jwt:
   secret: ${JWT_SECRET_KEY}
   expiration:

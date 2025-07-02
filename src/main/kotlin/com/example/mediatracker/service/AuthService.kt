@@ -1,10 +1,10 @@
 package com.example.mediatracker.service
 
-import com.example.mediatracker.api.dto.auth.login.LoginRequest
-import com.example.mediatracker.api.dto.auth.login.LoginResponse
-import com.example.mediatracker.api.dto.auth.refresh.RefreshRequest
-import com.example.mediatracker.api.dto.auth.refresh.RefreshResponse
-import com.example.mediatracker.api.dto.auth.registration.RegistrationRequest
+import com.example.mediatracker.api.dto.auth.LoginRequest
+import com.example.mediatracker.api.dto.auth.LoginResponse
+import com.example.mediatracker.api.dto.auth.RefreshRequest
+import com.example.mediatracker.api.dto.auth.RefreshResponse
+import com.example.mediatracker.api.dto.auth.RegistrationRequest
 import com.example.mediatracker.common.auth.jwt.JwtService
 import com.example.mediatracker.domain.entity.User
 import com.example.mediatracker.common.logging.Logging
