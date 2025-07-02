@@ -2,7 +2,7 @@ package com.example.mediatracker.domain.repository
 
 import com.example.jooq.generated.tables.daos.UsersDao
 import com.example.mediatracker.domain.entity.User
-import com.example.mediatracker.common.mapper.UserMapper
+import com.example.mediatracker.domain.mapper.UserMapper
 import org.springframework.stereotype.Repository
 
 @Repository
