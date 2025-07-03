@@ -46,7 +46,14 @@ class UserRepository(
             usersProfilesDao.insert(pojo)
             mapper.userProfileToDomain(pojo)
         }
+    }
 
+    fun updateUsername(userId: Long, newUsername: String): Boolean {
+        val rows = dsl.update(users)
+            .set(users.USERNAME, newUsername)
+            .where(users.ID.eq(userId))
+            .execute()
+        return rows == 1
     }
 
     fun findByEmail(email: String): User? =
@@ -57,6 +64,9 @@ class UserRepository(
 
     fun findById(id: Long): User? =
         usersDao.fetchOneById(id)?.let(mapper::userToDomain)
+
+    fun findProfileById(id: Long): UserProfile? =
+        usersProfilesDao.fetchOneByUserId(id)?.let { mapper.userProfileToDomain(it) }
 
     fun findWithProfileById(id: Long): UserFullInfo? =
         dsl.select(

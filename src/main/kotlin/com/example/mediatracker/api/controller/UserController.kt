@@ -2,8 +2,10 @@ package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.users.ChangeEmailRequest
 import com.example.mediatracker.api.dto.users.ChangePasswordRequest
+import com.example.mediatracker.api.dto.users.UpdateUserRequest
 import com.example.mediatracker.api.dto.users.UserDto
 import com.example.mediatracker.common.constants.SecurityConstants
+import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.service.UserService
 import io.swagger.v3.oas.annotations.Operation
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,14 +31,21 @@ class UserController(
     @GetMapping("/me")
     @Operation(summary = "Получение информации о пользователе")
     fun getUserMe(@AuthenticationPrincipal jwt: Jwt): UserDto? {
-        val userId = jwt.subject.toLong()
+        val userId = jwt.subject.toLongOrNull()
+            ?: throw InvalidTokenException()
         return userService.getUserMe(userId)
     }
 
-    @Deprecated("Не готово")
     @PatchMapping("/me")
     @Operation(summary = "Изменение информации о пользователе")
-    fun updateUser(@RequestBody user: UserDto) = null
+    fun updateUser(
+        @AuthenticationPrincipal jwt: Jwt,
+        @Validated @RequestBody user: UpdateUserRequest
+    ) {
+        val userId = jwt.subject.toLongOrNull()
+            ?: throw InvalidTokenException()
+        userService.updateUser(userId, user)
+    }
 
     @Deprecated("Не готово")
     @PatchMapping("/me/password")

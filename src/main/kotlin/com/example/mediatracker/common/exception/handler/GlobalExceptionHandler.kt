@@ -55,4 +55,7 @@ class GlobalExceptionHandler {
     fun handleEntityNotFound(ex: EntityNotFoundException) =
         buildErrorMessage(HttpStatus.NOT_FOUND, ex.message)
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgument(ex: IllegalArgumentException) =
+        buildErrorMessage(HttpStatus.BAD_REQUEST, ex.message)
 }

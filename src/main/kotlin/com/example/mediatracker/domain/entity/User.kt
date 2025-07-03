@@ -1,8 +1,8 @@
 package com.example.mediatracker.domain.entity
 
 data class User(
-    val id: Long? = null,
-    val username: String,
-    val email: String,
-    val passwordHash : String,
+    var id: Long? = null,
+    var username: String,
+    var email: String? = null,
+    var passwordHash : String? = null,
 )

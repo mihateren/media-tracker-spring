@@ -8,7 +8,9 @@ create table if not exists users
     id       bigserial primary key,
     username varchar(50) not null unique,
     email    varchar(50) not null unique,
-    password varchar(60) not null
+    password varchar(60) not null,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ
 );
 
 --- users profiles

@@ -29,14 +29,6 @@ interface UserMapper {
 
     fun userProfileToPojo(user: UserProfile): UsersProfiles
 
-    fun toUserFullInfo(r: Record): UserFullInfo = UserFullInfo(
-        id        = r.get(USERS.ID)!!,
-        username  = r.get(USERS.USERNAME)!!,
-        email     = r.get(USERS.EMAIL)!!,
-        avatarUrl = r.get(USERS_PROFILES.AVATAR_URL)!!,
-        createdAt = r.get(USERS_PROFILES.CREATED_AT) ?: OffsetDateTime.now(),
-        updatedAt = r.get(USERS_PROFILES.UPDATED_AT)!!,
-        enabled   = r.get(USERS_PROFILES.ENABLED) ?: true
-    )
     fun userFullInfoToDto(userFullInfo: UserFullInfo): UserDto
+
 }
