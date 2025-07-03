@@ -1,7 +1,7 @@
 package com.example.mediatracker.config
 
 import com.example.mediatracker.external.props.KinopoiskProperties
-import com.example.mediatracker.logging.FeignLoggingInterceptor
+import com.example.mediatracker.common.logging.FeignLoggingInterceptor
 import feign.RequestInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

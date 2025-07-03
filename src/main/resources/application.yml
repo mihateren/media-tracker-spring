@@ -13,6 +13,11 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: media_schema
 
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: method
+
 jwt:
   secret: ${JWT_SECRET_KEY}
   expiration:
@@ -21,8 +26,9 @@ jwt:
 
 logging:
   level:
-    org.jooq.tools.LoggerListener: DEBUG
-    org.jooq.tools.JDBCUtils: DEBUG
+    org.jooq.tools.LoggerListener: ERROR
+    org.jooq.tools.JDBCUtils: ERROR
+    org.jooq.Constants: ERROR
 
 hosts:
   kinopoisk:

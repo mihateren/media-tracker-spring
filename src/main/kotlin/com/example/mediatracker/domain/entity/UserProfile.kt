@@ -4,11 +4,11 @@ import java.time.Clock
 import java.time.OffsetDateTime
 
 data class UserProfile(
-    val userId: Long,
-    val enabled: Boolean = true,
+    var userId: Long,
+    var enabled: Boolean = true,
     val createdAt: OffsetDateTime = OffsetDateTime.now(Clock.systemUTC()),
     val updatedAt: OffsetDateTime? = null,
-    val avatarUrl: String = DEFAULT_AVATAR,
+    var avatarUrl: String = DEFAULT_AVATAR,
 ) {
     companion object {
         const val DEFAULT_AVATAR =

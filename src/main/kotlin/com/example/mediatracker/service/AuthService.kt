@@ -1,20 +1,19 @@
 package com.example.mediatracker.service
 
-import com.example.mediatracker.api.dto.auth.login.LoginRequest
-import com.example.mediatracker.api.dto.auth.login.LoginResponse
-import com.example.mediatracker.api.dto.auth.refresh.RefreshRequest
-import com.example.mediatracker.api.dto.auth.refresh.RefreshResponse
-import com.example.mediatracker.api.dto.auth.registration.RegistrationRequest
-import com.example.mediatracker.auth.jwt.JwtService
+import com.example.mediatracker.api.dto.auth.LoginRequest
+import com.example.mediatracker.api.dto.auth.LoginResponse
+import com.example.mediatracker.api.dto.auth.RefreshRequest
+import com.example.mediatracker.api.dto.auth.RefreshResponse
+import com.example.mediatracker.api.dto.auth.RegistrationRequest
+import com.example.mediatracker.service.JwtService
 import com.example.mediatracker.domain.entity.User
-import com.example.mediatracker.domain.entity.UserProfile
-import com.example.mediatracker.domain.repository.UserProfilesRepository
-import com.example.mediatracker.logging.Logging
+import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.domain.repository.UserRepository
-import com.example.mediatracker.exception.entity.InvalidCredentialsException
-import com.example.mediatracker.exception.entity.InvalidTokenException
-import com.example.mediatracker.exception.entity.UserAlreadyExistsException
-import com.example.mediatracker.exception.entity.UserNotFoundException
+import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
+import com.example.mediatracker.common.exception.entity.InvalidTokenException
+import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
+import com.example.mediatracker.common.exception.entity.UserNotFoundException
+import com.example.mediatracker.domain.entity.UserProfile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,7 +23,6 @@ class AuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
     private val passwordEncoder: PasswordEncoder,
-    private val userProfilesRepository: UserProfilesRepository,
 ) : Logging {
 
     @Transactional
@@ -44,8 +42,7 @@ class AuthService(
                 passwordHash = passwordEncoder.encode(request.password),
             )
         )
-        log.info { "User ${user} saved in database" }
-        userProfilesRepository.save(
+        userRepository.saveProfile(
             UserProfile(userId = user.id!!)
         )
     }
@@ -58,8 +55,8 @@ class AuthService(
             throw InvalidCredentialsException()
 
         return LoginResponse(
-            accessToken = jwtService.generateAccessToken(user.username),
-            refreshToken = jwtService.generateRefreshToken(user.username)
+            accessToken = jwtService.generateAccessToken(user),
+            refreshToken = jwtService.generateRefreshToken(user)
         )
     }
 
@@ -71,7 +68,7 @@ class AuthService(
             ?: throw UserNotFoundException()
 
         return RefreshResponse(
-            accessToken = jwtService.generateAccessToken(user.username)
+            accessToken = jwtService.generateAccessToken(user)
         )
     }
 

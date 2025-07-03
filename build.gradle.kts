@@ -43,10 +43,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign") {
         exclude(group = "javax.servlet")
     }
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // Kotlin
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
@@ -99,7 +100,11 @@ jooq {
                         properties = listOf(
                             Property().withKey("scripts").withValue("src/main/resources/db/changelog/schema/*.sql"),
                             Property().withKey("sort").withValue("alphanumeric"),
-                            Property().withKey("defaultNameCase").withValue("lower")
+                            Property().withKey("defaultNameCase").withValue("lower"),
+
+                            Property().withKey("parseIgnoreComments").withValue("true"),
+                            Property().withKey("parseIgnoreCommentStart").withValue("[jooq ignore start]"),
+                            Property().withKey("parseIgnoreCommentStop").withValue("[jooq ignore stop]")
                         )
                     }
 
