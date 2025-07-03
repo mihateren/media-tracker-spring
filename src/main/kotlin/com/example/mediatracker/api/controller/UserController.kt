@@ -47,14 +47,26 @@ class UserController(
         userService.updateUser(userId, user)
     }
 
-    @Deprecated("Не готово")
     @PatchMapping("/me/password")
     @Operation(summary = "Смена пароля пользователя")
-    fun changePassword(@RequestBody changePasswordRequest: ChangePasswordRequest) = null
+    fun changePassword(
+        @AuthenticationPrincipal jwt: Jwt,
+        @Validated @RequestBody changePasswordRequest: ChangePasswordRequest
+    ) {
+        val userId = jwt.subject.toLongOrNull()
+            ?: throw InvalidTokenException()
+        userService.changePassword(userId, changePasswordRequest)
+    }
 
-    @Deprecated("Не готово")
     @PatchMapping("/me/email")
     @Operation(summary = "Смена email пользователя")
-    fun changeEmail(@RequestBody changeEmailRequest: ChangeEmailRequest) = null
+    fun changeEmail(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody changeEmailRequest: ChangeEmailRequest
+    ) {
+        val userId = jwt.subject.toLongOrNull()
+            ?: throw InvalidTokenException()
+        userService.changeEmail(userId, changeEmailRequest)
+    }
 }
 

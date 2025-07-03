@@ -1,3 +1,5 @@
 package com.example.mediatracker.common.exception.entity
 
-class InvalidCredentialsException : RuntimeException("Bad credentials")
+class InvalidCredentialsException(
+    override var message: String = "Bad credentials"
+) : RuntimeException(message)
