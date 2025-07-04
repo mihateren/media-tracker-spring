@@ -1,7 +1,6 @@
 package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
-import com.example.mediatracker.api.dto.pair.CreatePairResponse
 import com.example.mediatracker.common.constants.SecurityConstants
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.extension.userId
@@ -26,56 +25,47 @@ import org.springframework.web.bind.annotation.RestController
 @SecurityRequirement(name = SecurityConstants.BEARER_AUTH)
 @Tag(name = "Pairs")
 class PairsController(
-    val pairService: PairService
+    private val pairService: PairService
 ) {
 
-    @Deprecated("Не готово")
-    @GetMapping("/current")
-    @Operation(summary = "Активная пара текущего пользователя")
-    fun getCurrentPair() = null
-
-    @PostMapping("/invite")
-    @Operation(summary = "Сгенерировать инвайт-токен")
-    fun createInvite(@AuthenticationPrincipal jwt: Jwt): CreatePairResponse {
-        return pairService.generateInviteToken(jwt.userId())
-    }
-
-    @Deprecated("Не готово")
-    @PostMapping("/accept")
-    @Operation(summary = "Принять приглашение")
-    fun acceptInvite() = null
-
-    @Deprecated("Не готово")
-    @PostMapping("/reject")
-    @Operation(summary = "Отклонить приглашение")
-    fun rejectInvite() = null
-
-    @Deprecated("Не готово")
-    @DeleteMapping("/{pairId}/exit")
-    @Operation(summary = "Выйти из пары")
-    fun exitPair(@PathVariable pairId: String) = null
-
-    @Deprecated("Не готово")
-    @GetMapping("/{pairId}/media")
-    @Operation(summary = "Все медиа пары")
-    fun getPairMedia(@PathVariable pairId: String) = null
-
-    @Deprecated("Не готово")
-    @PostMapping("/{pairId}/media/{kinopoiskId}")
-    @Operation(summary = "Добавить медиа")
-    fun addMedia(@PathVariable pairId: String, @PathVariable kinopoiskId: String) = null
-
-    @Deprecated("Не готово")
-    @PatchMapping("/{pairId}/media/{mediaId}")
-    @Operation(summary = "Изменить статус/оценку/отзыв медиа")
-    fun changeMediaState(
-        @PathVariable pairId: String,
-        @PathVariable mediaId: String,
-        @RequestBody request: ChangeMediaStateRequest
-    ) = null
-
-    @Deprecated("Не готово")
-    @DeleteMapping("/{pairId}/media/{mediaId}")
-    @Operation(summary = "Удалить медиа из списка")
-    fun removeMedia(@PathVariable pairId: String, @PathVariable mediaId: String) = null
+//    @GetMapping
+//    @Operation(summary = "Список активных пар текущего пользователя")
+//    fun listPairs(@AuthenticationPrincipal jwt: Jwt) =
+//        pairService.listActive(jwt.userId)
+//
+//    @DeleteMapping("/{pairId}")
+//    @Operation(summary = "Выйти из пары")
+//    fun exitPair(
+//        @AuthenticationPrincipal jwt: Jwt,
+//        @PathVariable pairId: Long
+//    ) = pairService.exit(pairId, jwt.userId)
+//
+//
+//    @GetMapping("/{pairId}/media")
+//    fun getPairMedia(
+//        @PathVariable pairId: Long,
+//        @AuthenticationPrincipal jwt: Jwt
+//    ) = pairService.media.list(pairId, jwt.userId)
+//
+//    @PostMapping("/{pairId}/media/{kpId}")
+//    fun addMedia(
+//        @PathVariable pairId: Long,
+//        @PathVariable kpId: Long,
+//        @AuthenticationPrincipal jwt: Jwt
+//    ) = pairService.media.add(pairId, kpId, jwt.userId)
+//
+//    @PatchMapping("/{pairId}/media/{mediaId}")
+//    fun changeMediaState(
+//        @PathVariable pairId: Long,
+//        @PathVariable mediaId: Long,
+//        @RequestBody req: ChangeMediaStateRequest,
+//        @AuthenticationPrincipal jwt: Jwt
+//    ) = pairService.media.update(pairId, mediaId, jwt.userId, req)
+//
+//    @DeleteMapping("/{pairId}/media/{mediaId}")
+//    fun removeMedia(
+//        @PathVariable pairId: Long,
+//        @PathVariable mediaId: Long,
+//        @AuthenticationPrincipal jwt: Jwt
+//    ) = pairService.media.remove(pairId, mediaId, jwt.userId)
 }

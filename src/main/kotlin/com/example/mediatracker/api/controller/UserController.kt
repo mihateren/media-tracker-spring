@@ -1,11 +1,10 @@
 package com.example.mediatracker.api.controller
 
-import com.example.mediatracker.api.dto.users.ChangeEmailRequest
-import com.example.mediatracker.api.dto.users.ChangePasswordRequest
-import com.example.mediatracker.api.dto.users.UpdateUserRequest
-import com.example.mediatracker.api.dto.users.UserDto
+import com.example.mediatracker.api.dto.user.ChangeEmailRequest
+import com.example.mediatracker.api.dto.user.ChangePasswordRequest
+import com.example.mediatracker.api.dto.user.UpdateUserRequest
+import com.example.mediatracker.api.dto.user.UserDto
 import com.example.mediatracker.common.constants.SecurityConstants
-import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.extension.userId
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.service.UserService

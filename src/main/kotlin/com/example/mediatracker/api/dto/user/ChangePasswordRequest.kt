@@ -1,4 +1,4 @@
-package com.example.mediatracker.api.dto.users
+package com.example.mediatracker.api.dto.user
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank

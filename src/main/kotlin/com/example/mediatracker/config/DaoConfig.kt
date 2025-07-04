@@ -1,5 +1,6 @@
 package com.example.mediatracker.config
 
+import com.example.jooq.generated.tables.daos.InvitationsDao
 import com.example.jooq.generated.tables.daos.PairsDao
 import com.example.jooq.generated.tables.daos.UsersDao
 import com.example.jooq.generated.tables.daos.UsersProfilesDao
@@ -20,5 +21,8 @@ class DaoConfig(
 
     @Bean
     fun pairsDao() = PairsDao(dslContext.configuration())
+
+    @Bean
+    fun invitationDao() = InvitationsDao(dslContext.configuration())
 
 }

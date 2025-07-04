@@ -1,8 +1,8 @@
-package com.example.mediatracker.domain.entity.user
+package com.example.mediatracker.api.dto.user
 
 import java.time.OffsetDateTime
 
-data class UserFullInfo(
+data class UserDto(
     val id: Long,
     val username: String,
     val email: String,

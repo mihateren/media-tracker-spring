@@ -93,6 +93,7 @@ jooq {
                         isDaos = true
                         isSpringAnnotations = true
                         isSpringDao = true
+                        isImmutablePojos = true
                     }
 
                     database = org.jooq.meta.jaxb.Database().apply {

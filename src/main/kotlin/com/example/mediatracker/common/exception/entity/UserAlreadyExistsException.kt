@@ -1,5 +1,5 @@
 package com.example.mediatracker.common.exception.entity
 
 class UserAlreadyExistsException(
-    message: String = "User with given credentials already exists"
+    message: String = "Пользователь с таким логином или username уже существует"
 ) : RuntimeException(message)

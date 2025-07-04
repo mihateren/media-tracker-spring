@@ -1,4 +1,4 @@
-package com.example.mediatracker.api.dto.users
+package com.example.mediatracker.api.dto.user
 
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size

@@ -4,96 +4,74 @@ import com.example.jooq.generated.tables.Users
 import com.example.jooq.generated.tables.UsersProfiles
 import com.example.jooq.generated.tables.daos.UsersDao
 import com.example.jooq.generated.tables.daos.UsersProfilesDao
-import com.example.mediatracker.domain.entity.user.User
-import com.example.mediatracker.domain.entity.user.UserFullInfo
-import com.example.mediatracker.domain.entity.user.UserProfile
+import com.example.mediatracker.domain.entity.impl.User
+import com.example.mediatracker.domain.entity.impl.UserFullInfo
+import com.example.mediatracker.domain.entity.impl.UserProfile
 import com.example.mediatracker.domain.mapper.UserMapper
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import java.time.Clock
-import java.time.OffsetDateTime
 
 @Repository
 class UserRepository(
-    private val usersDao: UsersDao,
-    private val usersProfilesDao: UsersProfilesDao,
     private val dsl: DSLContext,
+    private val usersDao: UsersDao,
+    private val profilesDao: UsersProfilesDao,
     private val mapper: UserMapper,
 ) {
+    private val U = Users.USERS
+    private val P = UsersProfiles.USERS_PROFILES
 
-    private val users = Users.USERS
-    private val profiles = UsersProfiles.USERS_PROFILES
 
     fun save(user: User): User {
         val pojo = mapper.userToPojo(user)
-        return if (user.id == null) {
-            usersDao.insert(pojo)
-            mapper.userToDomain(pojo)
-        } else {
-            usersDao.update(pojo)
-            user
-        }
+        usersDao.merge(pojo)
+        return mapper.userToDomain(pojo)
     }
 
-    fun saveProfile(userProfile: UserProfile): UserProfile {
-        val pojo = mapper.userProfileToPojo(userProfile)
-        return if (usersProfilesDao.existsById(userProfile.userId)) {
-            val currentTime = OffsetDateTime.now(Clock.systemUTC())
-            pojo.updatedAt = currentTime
-            usersProfilesDao.update(pojo)
-            userProfile.copy(updatedAt = currentTime)
-        } else {
-            usersProfilesDao.insert(pojo)
-            mapper.userProfileToDomain(pojo)
-        }
+    fun updateUsername(id: Long, newUsername: String): Boolean =
+        dsl.update(U)
+            .set(U.USERNAME, newUsername)
+            .where(U.ID.eq(id))
+            .execute() == 1
+
+
+    fun saveProfile(profile: UserProfile): UserProfile {
+        val pojo = mapper.userProfileToPojo(profile)
+        profilesDao.merge(pojo)
+        return mapper.userProfileToDomain(pojo)
     }
 
-    fun updateUsername(userId: Long, newUsername: String): Boolean {
-        val rows = dsl.update(users)
-            .set(users.USERNAME, newUsername)
-            .where(users.ID.eq(userId))
-            .execute()
-        return rows == 1
-    }
-
-    fun findByEmail(email: String): User? =
-        usersDao.fetchOneByEmail(email)?.let(mapper::userToDomain)
-
-    fun findByUsername(username: String): User? =
-        usersDao.fetchOneByUsername(username)?.let(mapper::userToDomain)
 
     fun findById(id: Long): User? =
         usersDao.fetchOneById(id)?.let(mapper::userToDomain)
 
+    fun findByEmail(email: String): User? =
+        usersDao.fetchOneByEmail(email)?.let(mapper::userToDomain)
+
+    fun findByUsername(name: String): User? =
+        usersDao.fetchOneByUsername(name)?.let(mapper::userToDomain)
+
     fun findProfileById(id: Long): UserProfile? =
-        usersProfilesDao.fetchOneByUserId(id)?.let { mapper.userProfileToDomain(it) }
+        profilesDao.fetchOneByUserId(id)?.let(mapper::userProfileToDomain)
+
+    fun existsByUsername(name: String) = usersDao.fetchOneByUsername(name) != null
+    fun existsByEmail(email: String) = usersDao.fetchOneByEmail(email) != null
 
     fun findWithProfileById(id: Long): UserFullInfo? =
         dsl.select(
-            users.ID, users.USERNAME, users.EMAIL,
-            profiles.AVATAR_URL, profiles.CREATED_AT, profiles.UPDATED_AT,
-            profiles.ENABLED
-        ).from(users)
-            .leftJoin(profiles).on(profiles.USER_ID.eq(users.ID))
-            .where(users.ID.eq(id))
-            .fetchOne { (uid,
-                            name,
-                            mail,
-                            avatar,
-                            created,
-                            updated,
-                            enabled) ->
+            U.ID, U.USERNAME, U.EMAIL,
+            P.AVATAR_URL, P.CREATED_AT, P.UPDATED_AT, P.ENABLED
+        )
+            .from(U)
+            .leftJoin(P).on(P.USER_ID.eq(U.ID))
+            .where(U.ID.eq(id))
+            .fetchOne { (uid, name, mail, avatar, created, updated, enabled) ->
                 UserFullInfo(
                     id = uid!!,
                     username = name!!,
                     email = mail!!,
                     avatarUrl = avatar,
-                    createdAt = created!!,
-                    updatedAt = updated,
                     enabled = enabled!!
                 )
             }
-
-    fun existsByUsername(username: String) = usersDao.fetchOneByUsername(username) != null
-    fun existsByEmail(email: String) = usersDao.fetchOneByEmail(email) != null
 }

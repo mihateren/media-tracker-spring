@@ -1,9 +1,9 @@
 package com.example.mediatracker.service
 
-import com.example.mediatracker.api.dto.users.ChangeEmailRequest
-import com.example.mediatracker.api.dto.users.ChangePasswordRequest
-import com.example.mediatracker.api.dto.users.UpdateUserRequest
-import com.example.mediatracker.api.dto.users.UserDto
+import com.example.mediatracker.api.dto.user.ChangeEmailRequest
+import com.example.mediatracker.api.dto.user.ChangePasswordRequest
+import com.example.mediatracker.api.dto.user.UpdateUserRequest
+import com.example.mediatracker.api.dto.user.UserDto
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
 import com.example.mediatracker.common.logging.Logging
@@ -22,7 +22,7 @@ class UserService(
 
     fun getUserMe(userId: Long): UserDto? {
         val userFullInfo = userRepository.findWithProfileById(userId)
-            ?: throw UserNotFoundException("User $userId not found")
+            ?: throw UserNotFoundException(userId)
         return mapper.userFullInfoToDto(userFullInfo)
     }
 
@@ -38,7 +38,7 @@ class UserService(
 
         request.avatarUrl?.let { url ->
             val profile = userRepository.findProfileById(userId)
-                ?: throw UserNotFoundException("User profile $userId not found")
+                ?: throw UserNotFoundException(userId)
             profile.avatarUrl = url
             userRepository.saveProfile(profile)
         }
@@ -47,7 +47,7 @@ class UserService(
     @Transactional
     fun changePassword(userId: Long, request: ChangePasswordRequest) {
         val user = userRepository.findById(userId)
-            ?: throw UserNotFoundException("User $userId not found")
+            ?: throw UserNotFoundException(userId)
 
         if (!passwordEncoder.matches(request.oldPassword, user.passwordHash)) {
             throw InvalidCredentialsException("Неверный текущий пароль")
@@ -64,7 +64,7 @@ class UserService(
     @Transactional
     fun changeEmail(userId: Long, request: ChangeEmailRequest) {
         val user = userRepository.findById(userId)
-            ?: throw UserNotFoundException("User $userId not found")
+            ?: throw UserNotFoundException(userId)
 
         if (!passwordEncoder.matches(request.password, user.passwordHash)) {
             throw InvalidCredentialsException("Неверный текущий пароль")

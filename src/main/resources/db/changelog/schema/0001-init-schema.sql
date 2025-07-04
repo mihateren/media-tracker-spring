@@ -1,82 +1,101 @@
--- types
-CREATE TYPE pair_status AS ENUM ('pending', 'active', 'archived');
-CREATE TYPE media_type AS ENUM ('film', 'series');
+-- enums
+CREATE TYPE pair_status AS ENUM ('active', 'archived');
+CREATE TYPE invitation_status AS ENUM ('pending','accepted','rejected','canceled','expired');
+CREATE TYPE media_type AS ENUM ('film','series');
 CREATE TYPE media_state AS ENUM ('queue','watching','watched');
---- users
-create table if not exists users
+
+-- users
+CREATE TABLE users
 (
-    id       bigserial primary key,
-    username varchar(50) not null unique,
-    email    varchar(50) not null unique,
-    password varchar(60) not null,
+    id         BIGSERIAL PRIMARY KEY,
+    username   VARCHAR(50) NOT NULL UNIQUE,
+    email      VARCHAR(50) NOT NULL UNIQUE,
+    password   VARCHAR(60) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
 
---- users profiles
-create table if not exists users_profiles
+-- users_profiles
+CREATE TABLE users_profiles
 (
-    user_id    BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id    BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
     avatar_url TEXT CHECK (avatar_url LIKE 'http://%' OR avatar_url LIKE 'https://%'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ,
-    enabled    boolean     not null default true
+    enabled    BOOLEAN     NOT NULL DEFAULT TRUE
+);
+CREATE INDEX idx_users_profiles_enabled ON users_profiles (enabled);
+
+-- pairs
+CREATE TABLE pairs
+(
+    pair_id        BIGSERIAL PRIMARY KEY,
+    first_user_id  BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    second_user_id BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    status         pair_status NOT NULL DEFAULT 'active',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ,
+    UNIQUE (first_user_id, second_user_id),
+    CHECK (first_user_id < second_user_id)
 );
 
---- media
-create table if not exists media
+-- invitations
+CREATE TABLE invitations
 (
-    id           bigserial primary key,
-    kinopoisk_id bigint       not null unique,
-    type         media_type   not null,
-    title        varchar(200) not null,
+    id            BIGSERIAL PRIMARY KEY,
+    inviter_id    BIGINT            NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    invitee_id    BIGINT            NULL REFERENCES users (id) ON DELETE CASCADE,
+    status        invitation_status NOT NULL DEFAULT 'pending',
+    pair_id       BIGINT            NULL REFERENCES pairs (pair_id) ON DELETE SET NULL,
+    created_at    TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ
+);
+
+-- уникальный pending-инвайт от A к B (по user_id)
+CREATE UNIQUE INDEX unq_invite_pending_user
+    ON invitations (inviter_id, invitee_id)
+    WHERE status = 'pending' AND invitee_id IS NOT NULL;
+
+-- media
+CREATE TABLE media
+(
+    id           BIGSERIAL PRIMARY KEY,
+    kinopoisk_id BIGINT       NOT NULL UNIQUE,
+    type         media_type   NOT NULL,
+    title        VARCHAR(200) NOT NULL,
     cached_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-
-);
-CREATE INDEX IF NOT EXISTS idx_users_profiles_enabled ON users_profiles (enabled);
-
---- pairs
-
-create table if not exists pairs
-(
-    pair_id        bigserial primary key,
-    first_user_id  bigint      not null references users (id) on delete cascade,
-    second_user_id bigint      not null references users (id) on delete cascade,
-    status         pair_status not null default 'pending',
-    unique (first_user_id, second_user_id),
-    check (first_user_id < second_user_id)
 );
 
---- genres
-create table if not exists genres
+-- genres
+CREATE TABLE genres
 (
-    id    bigserial primary key,
-    title varchar(50) not null unique
+    id    BIGSERIAL PRIMARY KEY,
+    title VARCHAR(50) NOT NULL UNIQUE
 );
 
---- media_genres
-create table if not exists media_genres
+-- media_genres (M:N)
+CREATE TABLE media_genres
 (
-    media_id bigint not null references media (id) on delete cascade,
-    genre_id bigint not null references genres (id) on delete cascade,
-    primary key (media_id, genre_id)
+    media_id BIGINT NOT NULL REFERENCES media (id) ON DELETE CASCADE,
+    genre_id BIGINT NOT NULL REFERENCES genres (id) ON DELETE CASCADE,
+    PRIMARY KEY (media_id, genre_id)
 );
 
---- pair_media
-create table if not exists pair_media
+-- pair_media
+CREATE TABLE pair_media
 (
-    pair_id    bigint      not null references pairs (pair_id) on delete cascade,
-    media_id   bigint      not null references media (id) on delete cascade,
+    pair_id    BIGINT      NOT NULL REFERENCES pairs (pair_id) ON DELETE CASCADE,
+    media_id   BIGINT      NOT NULL REFERENCES media (id) ON DELETE CASCADE,
     state      media_state NOT NULL DEFAULT 'queue',
     rating     SMALLINT CHECK (rating BETWEEN 1 AND 10),
     review     TEXT,
     added_by   BIGINT      NOT NULL REFERENCES users (id),
-    added_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (pair_id, media_id)
 );
 
---- trigger
+-- trigger
 /* [jooq ignore start] */
 CREATE OR REPLACE FUNCTION trg_set_updated_at()
     RETURNS TRIGGER AS
@@ -98,6 +117,18 @@ EXECUTE FUNCTION trg_set_updated_at();
 CREATE TRIGGER set_updated_at_users_profiles
     BEFORE UPDATE
     ON users_profiles
+    FOR EACH ROW
+EXECUTE FUNCTION trg_set_updated_at();
+
+CREATE TRIGGER set_updated_at_pairs
+    BEFORE UPDATE
+    ON pairs
+    FOR EACH ROW
+EXECUTE FUNCTION trg_set_updated_at();
+
+CREATE TRIGGER set_updated_at_invitations
+    BEFORE UPDATE
+    ON invitations
     FOR EACH ROW
 EXECUTE FUNCTION trg_set_updated_at();
 
