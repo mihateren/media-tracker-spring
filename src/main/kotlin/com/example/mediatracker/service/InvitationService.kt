@@ -1,10 +1,11 @@
 package com.example.mediatracker.service
 
+import com.example.jooq.generated.enums.InvitationStatus
+import com.example.mediatracker.repository.InvitationRepository
 import com.example.jooq.generated.tables.pojos.Invitations
 import com.example.mediatracker.api.dto.invitation.InviteByUserIdRequest
 import com.example.mediatracker.common.exception.entity.InvitationException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
-import com.example.mediatracker.repository.InvitationRepository
 import com.example.mediatracker.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -36,5 +37,8 @@ class InvitationService(
         )
         invitationRepository.save(invitation)
     }
+
+    fun getAllInv(userId: Long, statusDto: InvitationStatus?) =
+        invitationRepository.findByUserIdAndStatus(userId, statusDto)
 
 }
