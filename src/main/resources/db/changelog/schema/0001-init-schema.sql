@@ -10,7 +10,7 @@ CREATE TABLE users
     id         BIGSERIAL PRIMARY KEY,
     username   VARCHAR(50) NOT NULL UNIQUE,
     email      VARCHAR(50) NOT NULL UNIQUE,
-    password   VARCHAR(60) NOT NULL,
+    password_hash   VARCHAR(60) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -129,12 +129,6 @@ EXECUTE FUNCTION trg_set_updated_at();
 CREATE TRIGGER set_updated_at_invitations
     BEFORE UPDATE
     ON invitations
-    FOR EACH ROW
-EXECUTE FUNCTION trg_set_updated_at();
-
-CREATE TRIGGER set_updated_at_pairs
-    BEFORE UPDATE
-    ON pairs
     FOR EACH ROW
 EXECUTE FUNCTION trg_set_updated_at();
 

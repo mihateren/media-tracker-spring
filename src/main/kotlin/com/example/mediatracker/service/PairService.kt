@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 @Service
 class PairService(
     private val jwtService: JwtService,
-    private val pairRepository: PairRepository,
     private val userRepository: UserRepository,
 ) {
 

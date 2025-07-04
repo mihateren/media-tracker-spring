@@ -3,7 +3,7 @@ package com.example.mediatracker.service
 import com.example.mediatracker.api.dto.invitation.InviteByUserIdRequest
 import com.example.mediatracker.common.exception.entity.InvitationException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
-import com.example.mediatracker.domain.entity.impl.Invitation
+import com.example.mediatracker.domain.entity.Invitation
 import com.example.mediatracker.domain.repository.InvitationRepository
 import com.example.mediatracker.domain.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -29,9 +29,10 @@ class InvitationService(
 
         if (invitationRepository.existsPending(inviterId, inviteeId))
             throw InvitationException("Приглашение уже отправлено")
+
         val invitation = Invitation(
             inviterId = inviterUser.id!!,
-            inviteeId = inviteeUser.id!!
+            inviteeId = inviteeUser.id!!,
         )
         invitationRepository.save(invitation)
     }

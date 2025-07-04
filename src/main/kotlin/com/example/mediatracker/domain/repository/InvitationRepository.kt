@@ -2,16 +2,14 @@ package com.example.mediatracker.domain.repository
 
 import com.example.jooq.generated.enums.InvitationStatus
 import com.example.jooq.generated.tables.Invitations
-import com.example.jooq.generated.tables.daos.InvitationsDao
-import com.example.mediatracker.domain.entity.impl.Invitation
+import com.example.mediatracker.domain.entity.Invitation
 import com.example.mediatracker.domain.mapper.InvitationMapper
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 
 @Repository
 class InvitationRepository(
-    private val dsl: DSLContext,
-    private val mapper: InvitationMapper,
+    private val dsl: DSLContext
 ) {
 
     private val INV = Invitations.INVITATIONS
@@ -21,14 +19,18 @@ class InvitationRepository(
             INV,
             INV.INVITER_ID.eq(inviterId)
                 .and(INV.INVITEE_ID.eq(inviteeId))
-                .and(
-                    INV.STATUS.eq(InvitationStatus.pending)
-                )
+                .and(INV.STATUS.eq(InvitationStatus.pending))
         )
 
-    fun save(inv: Invitation) {
-        val record = dsl.newRecord(INV, mapper.toPojo(inv))
-        record.store()
-    }
 
+    fun save(inv: Invitation): Invitation {
+        val rec = dsl.newRecord(INV).apply {
+            from(inv)
+            if (status == null) status = InvitationStatus.pending
+        }
+
+        rec.store()
+
+        return rec.into(Invitation::class.java)
+    }
 }

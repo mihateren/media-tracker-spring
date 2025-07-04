@@ -1,7 +1,7 @@
 package com.example.mediatracker.domain.mapper
 
 import com.example.jooq.generated.tables.pojos.Invitations as InvitationsPojo
-import com.example.mediatracker.domain.entity.impl.Invitation
+import com.example.mediatracker.domain.entity.Invitation
 import org.mapstruct.Mapper
 import org.mapstruct.NullValueCheckStrategy
 

@@ -1,6 +1,5 @@
-package com.example.mediatracker.domain.entity.impl
+package com.example.mediatracker.domain.entity
 
-import com.example.mediatracker.domain.entity.BaseEntity
 import java.time.OffsetDateTime
 
 data class UserFullInfo(
@@ -9,4 +8,6 @@ data class UserFullInfo(
     val email: String,
     val avatarUrl: String? = null,
     val enabled: Boolean,
-): BaseEntity()
+    val createdAt: OffsetDateTime? = null,
+    val updatedAt: OffsetDateTime? = null,
+)

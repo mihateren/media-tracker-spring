@@ -1,7 +1,7 @@
 package com.example.mediatracker.service
 
 import com.example.mediatracker.common.props.JwtProperties
-import com.example.mediatracker.domain.entity.impl.User
+import com.example.mediatracker.domain.entity.User
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
