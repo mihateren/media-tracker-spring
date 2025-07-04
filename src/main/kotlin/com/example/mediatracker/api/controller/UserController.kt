@@ -6,6 +6,7 @@ import com.example.mediatracker.api.dto.users.UpdateUserRequest
 import com.example.mediatracker.api.dto.users.UserDto
 import com.example.mediatracker.common.constants.SecurityConstants
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
+import com.example.mediatracker.common.extension.userId
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.service.UserService
 import io.swagger.v3.oas.annotations.Operation
@@ -31,9 +32,7 @@ class UserController(
     @GetMapping("/me")
     @Operation(summary = "Получение информации о пользователе")
     fun getUserMe(@AuthenticationPrincipal jwt: Jwt): UserDto? {
-        val userId = jwt.subject.toLongOrNull()
-            ?: throw InvalidTokenException()
-        return userService.getUserMe(userId)
+        return userService.getUserMe(jwt.userId())
     }
 
     @PatchMapping("/me")
@@ -42,9 +41,7 @@ class UserController(
         @AuthenticationPrincipal jwt: Jwt,
         @Validated @RequestBody user: UpdateUserRequest
     ) {
-        val userId = jwt.subject.toLongOrNull()
-            ?: throw InvalidTokenException()
-        userService.updateUser(userId, user)
+        userService.updateUser(jwt.userId(), user)
     }
 
     @PatchMapping("/me/password")
@@ -53,9 +50,7 @@ class UserController(
         @AuthenticationPrincipal jwt: Jwt,
         @Validated @RequestBody changePasswordRequest: ChangePasswordRequest
     ) {
-        val userId = jwt.subject.toLongOrNull()
-            ?: throw InvalidTokenException()
-        userService.changePassword(userId, changePasswordRequest)
+        userService.changePassword(jwt.userId(), changePasswordRequest)
     }
 
     @PatchMapping("/me/email")
@@ -64,9 +59,7 @@ class UserController(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestBody changeEmailRequest: ChangeEmailRequest
     ) {
-        val userId = jwt.subject.toLongOrNull()
-            ?: throw InvalidTokenException()
-        userService.changeEmail(userId, changeEmailRequest)
+        userService.changeEmail(jwt.userId(), changeEmailRequest)
     }
 }
 

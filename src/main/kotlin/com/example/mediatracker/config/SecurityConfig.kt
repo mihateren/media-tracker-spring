@@ -33,7 +33,7 @@ class SecurityConfig(
     @Bean
     fun jwtDecoder(): JwtDecoder =
         NimbusJwtDecoder
-            .withSecretKey(Keys.hmacShaKeyFor(props.secret.toByteArray(StandardCharsets.UTF_8)))
+            .withSecretKey(Keys.hmacShaKeyFor(props.authSecret.toByteArray(StandardCharsets.UTF_8)))
             .macAlgorithm(MacAlgorithm.HS512)
             .build()
 
@@ -53,7 +53,6 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
-                        "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/v3/api-docs.yaml",

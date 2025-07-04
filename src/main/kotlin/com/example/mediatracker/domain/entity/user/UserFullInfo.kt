@@ -1,4 +1,4 @@
-package com.example.mediatracker.domain.entity
+package com.example.mediatracker.domain.entity.user
 
 import java.time.OffsetDateTime
 

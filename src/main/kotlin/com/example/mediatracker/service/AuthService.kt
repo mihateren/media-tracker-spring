@@ -5,15 +5,14 @@ import com.example.mediatracker.api.dto.auth.LoginResponse
 import com.example.mediatracker.api.dto.auth.RefreshRequest
 import com.example.mediatracker.api.dto.auth.RefreshResponse
 import com.example.mediatracker.api.dto.auth.RegistrationRequest
-import com.example.mediatracker.service.JwtService
-import com.example.mediatracker.domain.entity.User
+import com.example.mediatracker.domain.entity.user.User
 import com.example.mediatracker.common.logging.Logging
 import com.example.mediatracker.domain.repository.UserRepository
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
-import com.example.mediatracker.domain.entity.UserProfile
+import com.example.mediatracker.domain.entity.user.UserProfile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

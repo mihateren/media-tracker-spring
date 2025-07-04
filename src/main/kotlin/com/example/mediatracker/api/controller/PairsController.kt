@@ -1,11 +1,17 @@
 package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
+import com.example.mediatracker.api.dto.pair.CreatePairResponse
 import com.example.mediatracker.common.constants.SecurityConstants
+import com.example.mediatracker.common.exception.entity.InvalidTokenException
+import com.example.mediatracker.common.extension.userId
+import com.example.mediatracker.service.PairService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.websocket.server.PathParam
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -19,17 +25,20 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/pairs")
 @SecurityRequirement(name = SecurityConstants.BEARER_AUTH)
 @Tag(name = "Pairs")
-class PairsController {
+class PairsController(
+    val pairService: PairService
+) {
 
     @Deprecated("Не готово")
     @GetMapping("/current")
     @Operation(summary = "Активная пара текущего пользователя")
     fun getCurrentPair() = null
 
-    @Deprecated("Не готово")
     @PostMapping("/invite")
-    @Operation(summary = "Создать пару + токен")
-    fun createInvite() = null
+    @Operation(summary = "Сгенерировать инвайт-токен")
+    fun createInvite(@AuthenticationPrincipal jwt: Jwt): CreatePairResponse {
+        return pairService.generateInviteToken(jwt.userId())
+    }
 
     @Deprecated("Не готово")
     @PostMapping("/accept")

@@ -4,9 +4,9 @@ import com.example.jooq.generated.tables.Users
 import com.example.jooq.generated.tables.UsersProfiles
 import com.example.jooq.generated.tables.daos.UsersDao
 import com.example.jooq.generated.tables.daos.UsersProfilesDao
-import com.example.mediatracker.domain.entity.User
-import com.example.mediatracker.domain.entity.UserFullInfo
-import com.example.mediatracker.domain.entity.UserProfile
+import com.example.mediatracker.domain.entity.user.User
+import com.example.mediatracker.domain.entity.user.UserFullInfo
+import com.example.mediatracker.domain.entity.user.UserProfile
 import com.example.mediatracker.domain.mapper.UserMapper
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository

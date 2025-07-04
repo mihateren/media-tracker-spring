@@ -1,17 +1,12 @@
 package com.example.mediatracker.domain.mapper
 
 import com.example.jooq.generated.tables.pojos.UsersProfiles
-import com.example.jooq.generated.tables.references.USERS
-import com.example.jooq.generated.tables.references.USERS_PROFILES
 import com.example.mediatracker.api.dto.users.UserDto
 import com.example.jooq.generated.tables.pojos.Users as UsersPojo
-import com.example.mediatracker.domain.entity.User
-import com.example.mediatracker.domain.entity.UserFullInfo
-import com.example.mediatracker.domain.entity.UserProfile
-import org.jooq.Record
+import com.example.mediatracker.domain.entity.user.User
+import com.example.mediatracker.domain.entity.user.UserFullInfo
+import com.example.mediatracker.domain.entity.user.UserProfile
 import org.mapstruct.*
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 
 @Mapper(
     componentModel = "spring",
