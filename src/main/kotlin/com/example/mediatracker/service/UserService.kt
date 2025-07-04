@@ -7,8 +7,7 @@ import com.example.mediatracker.api.dto.user.UserDto
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
 import com.example.mediatracker.common.logging.Logging
-import com.example.mediatracker.domain.mapper.UserMapper
-import com.example.mediatracker.domain.repository.UserRepository
+import com.example.mediatracker.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,15 +15,13 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val mapper: UserMapper,
     private val passwordEncoder: PasswordEncoder
 ) : Logging {
 
-    fun getUserMe(userId: Long): UserDto? {
-        val userFullInfo = userRepository.findWithProfileById(userId)
+    @Transactional(readOnly = true)
+    fun getUserMe(userId: Long): UserDto =
+        userRepository.findWithProfileById(userId)
             ?: throw UserNotFoundException(userId)
-        return mapper.userFullInfoToDto(userFullInfo)
-    }
 
     @Transactional
     fun updateUser(userId: Long, request: UpdateUserRequest) {

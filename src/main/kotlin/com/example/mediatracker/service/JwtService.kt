@@ -1,7 +1,7 @@
 package com.example.mediatracker.service
 
+import com.example.jooq.generated.tables.pojos.Users
 import com.example.mediatracker.common.props.JwtProperties
-import com.example.mediatracker.domain.entity.User
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -31,8 +31,8 @@ class JwtService(
     private val refreshTtl = Duration.ofDays(props.expiration.refreshDays)
 
 
-    fun generateAccessToken(user: User) = buildToken(user, accessTtl, TYPE_ACCESS, authKey)
-    fun generateRefreshToken(user: User) = buildToken(user, refreshTtl, TYPE_REFRESH, authKey)
+    fun generateAccessToken(user: Users) = buildToken(user, accessTtl, TYPE_ACCESS, authKey)
+    fun generateRefreshToken(user: Users) = buildToken(user, refreshTtl, TYPE_REFRESH, authKey)
 
 
     fun validateAccessToken(token: String) = validate(token, TYPE_ACCESS)
@@ -47,7 +47,7 @@ class JwtService(
 
 
     private fun buildToken(
-        user: User,
+        user: Users,
         ttl: Duration,
         type: String,
         key: SecretKey

@@ -1,18 +1,11 @@
 package com.example.mediatracker.service
 
-import com.example.mediatracker.api.dto.auth.LoginRequest
-import com.example.mediatracker.api.dto.auth.LoginResponse
-import com.example.mediatracker.api.dto.auth.RefreshRequest
-import com.example.mediatracker.api.dto.auth.RefreshResponse
-import com.example.mediatracker.api.dto.auth.RegistrationRequest
-import com.example.mediatracker.domain.entity.User
+import com.example.jooq.generated.tables.pojos.Users
+import com.example.jooq.generated.tables.pojos.UsersProfiles
+import com.example.mediatracker.api.dto.auth.*
+import com.example.mediatracker.common.exception.entity.*
 import com.example.mediatracker.common.logging.Logging
-import com.example.mediatracker.domain.repository.UserRepository
-import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
-import com.example.mediatracker.common.exception.entity.InvalidTokenException
-import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
-import com.example.mediatracker.common.exception.entity.UserNotFoundException
-import com.example.mediatracker.domain.entity.UserProfile
+import com.example.mediatracker.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,43 +18,43 @@ class AuthService(
 ) : Logging {
 
     @Transactional
-    fun registration(request: RegistrationRequest) {
+    fun registration(req: RegistrationRequest) {
+        if (userRepository.existsByUsername(req.username))
+            throw UserAlreadyExistsException("Username '${req.username}' уже зарегистрирован")
 
-        if (userRepository.existsByUsername(request.username)) {
-            throw UserAlreadyExistsException("Username '${request.username}' уже зарегистрирован")
-        }
-        if (userRepository.existsByEmail(request.email)) {
-            throw UserAlreadyExistsException("Email '${request.email}' уже зарегистрирован")
-        }
+        if (userRepository.existsByEmail(req.email))
+            throw UserAlreadyExistsException("Email '${req.email}' уже зарегистрирован")
 
         val user = userRepository.save(
-            User(
-                username = request.username,
-                email = request.email,
-                passwordHash = passwordEncoder.encode(request.password),
+            Users(
+                username     = req.username,
+                email        = req.email,
+                passwordHash = passwordEncoder.encode(req.password)
             )
         )
+
         userRepository.saveProfile(
-            UserProfile(userId = user.id!!)
+            UsersProfiles(userId = user.id)
         )
     }
 
-    fun login(request: LoginRequest): LoginResponse {
-        val user = userRepository.findByEmail(request.email)
+    fun login(req: LoginRequest): LoginResponse {
+        val user = userRepository.findByEmail(req.email)
             ?: throw InvalidCredentialsException()
 
-        if (!passwordEncoder.matches(request.password, user.passwordHash))
+        if (!passwordEncoder.matches(req.password, user.passwordHash))
             throw InvalidCredentialsException()
 
         return LoginResponse(
-            accessToken = jwtService.generateAccessToken(user),
+            accessToken  = jwtService.generateAccessToken(user),
             refreshToken = jwtService.generateRefreshToken(user)
         )
     }
 
     fun refresh(req: RefreshRequest): RefreshResponse {
         val token = req.refreshToken
-        if (!jwtService.validateRefreshToken(token)) throw InvalidTokenException()
+        if (!jwtService.validateRefreshToken(token))
+            throw InvalidTokenException()
 
         val user = userRepository.findByUsername(jwtService.extractUsername(token))
             ?: throw UserNotFoundException()
@@ -70,5 +63,4 @@ class AuthService(
             accessToken = jwtService.generateAccessToken(user)
         )
     }
-
 }
