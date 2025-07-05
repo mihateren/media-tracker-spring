@@ -42,9 +42,12 @@ class InvitationRepository(
                 INVITATIONS.INVITER_ID.eq(userId)
                     .or(INVITATIONS.INVITEE_ID.eq(userId))
             )
-            .and(
-                INVITATIONS.STATUS.eq(status)
-            )
+            .let { q ->
+                if (status != null)
+                    q.and(INVITATIONS.STATUS.eq(status))
+                else
+                    q
+            }
             .orderBy(INVITATIONS.CREATED_AT.desc())
             .fetchInto(Invitations::class.java)
 }
