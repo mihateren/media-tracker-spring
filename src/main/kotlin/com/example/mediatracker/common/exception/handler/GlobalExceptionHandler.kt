@@ -1,6 +1,7 @@
 package com.example.mediatracker.common.exception.handler
 
 import com.example.mediatracker.common.exception.dto.ErrorResponse
+import com.example.mediatracker.common.exception.entity.AccessDeniedException
 import com.example.mediatracker.common.exception.entity.EntityNotFoundException
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
@@ -63,4 +64,8 @@ class GlobalExceptionHandler {
     @ExceptionHandler(InvitationException::class)
     fun handleInvitation(ex: InvitationException) =
         buildErrorMessage(HttpStatus.BAD_REQUEST, ex.message)
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(ex: AccessDeniedException) =
+        buildErrorMessage(HttpStatus.FORBIDDEN, ex.message)
 }

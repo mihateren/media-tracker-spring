@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -46,28 +47,29 @@ class InvitationController(
         )
         @RequestParam(required = false)
         status: InvitationStatus? = null
-    ) = invitationService.getAllInv(jwt.userId(), status)
-//
-//
-//    @PostMapping("/{id}/accept")
-//    @Operation(summary = "Принять приглашение")
-//    fun accept(
-//        @AuthenticationPrincipal jwt: Jwt,
-//        @PathVariable id: Long
-//    ) = invitationService.accept(jwt.userId, id)
-//
-//    @PostMapping("/{id}/reject")
-//    @Operation(summary = "Отклонить приглашение")
-//    fun reject(
-//        @AuthenticationPrincipal jwt: Jwt,
-//        @PathVariable id: Long
-//    ) = invitationService.reject(jwt.userId, id)
-//
-//    @DeleteMapping("/{id}")
-//    @Operation(summary = "Отменить приглашение (Cancel)")
-//    fun cancel(
-//        @AuthenticationPrincipal jwt: Jwt,
-//        @PathVariable id: Long
-//    ) = invitationService.cancel(jwt.userId, id)
+    ) = invitationService.getAllInvitations(jwt.userId(), status)
+
+
+    @PostMapping("/{id}/accept")
+    @Operation(summary = "Принять приглашение")
+    fun accept(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable id: Long
+    ) = invitationService.acceptInvitation(jwt.userId(), id)
+
+
+    @PostMapping("/{id}/reject")
+    @Operation(summary = "Отклонить приглашение")
+    fun reject(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable id: Long
+    ) = invitationService.rejectInvitation(jwt.userId(), id)
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Отменить приглашение")
+    fun cancel(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable id: Long
+    ) = invitationService.cancelInvitation(jwt.userId(), id)
 
 }

@@ -11,6 +11,10 @@ class InvitationRepository(
     private val dsl: DSLContext
 ) {
 
+    fun getByInvId(invId: Long): Invitations? =
+        dsl.selectFrom(INVITATIONS)
+            .where(INVITATIONS.ID.eq(invId))
+
     fun existsPending(inviterId: Long, inviteeId: Long): Boolean =
         dsl.fetchExists(
             INVITATIONS,
@@ -50,4 +54,13 @@ class InvitationRepository(
             }
             .orderBy(INVITATIONS.CREATED_AT.desc())
             .fetchInto(Invitations::class.java)
+
+    fun changeStatus(invId: Long, status: InvitationStatus): Unit = run {
+        dsl.update(INVITATIONS)
+            .set(INVITATIONS.STATUS, status)
+            .where(INVITATIONS.ID.eq(invId))
+            .execute()
+    }
+
+
 }
