@@ -3,6 +3,10 @@ import org.jooq.meta.jaxb.Property
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jooq.meta.jaxb.Generate
+import org.jooq.meta.jaxb.Matchers
+import org.jooq.meta.jaxb.MatchersTableType
+import org.jooq.meta.jaxb.Strategy
 
 plugins {
     kotlin("jvm") version "2.2.0"
@@ -88,12 +92,12 @@ jooq {
                 generator.apply {
                     name = "org.jooq.codegen.KotlinGenerator"
 
-                    generate = org.jooq.meta.jaxb.Generate().apply {
-                        isPojos = true
-                        isDaos = true
-                        isSpringAnnotations = true
-                        isSpringDao = true
-                    }
+                    generate = Generate()
+                        .withPojos(true)
+                        .withDaos(true)
+                        .withSpringAnnotations(true)
+                        .withSpringDao(true)
+                        .withJavaTimeTypes(true)
 
                     database = org.jooq.meta.jaxb.Database().apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
@@ -112,6 +116,7 @@ jooq {
                         packageName = "com.example.jooq.generated"
                         directory = "$buildDir/generated-src/jooq/main"
                     }
+
                 }
             }
         }

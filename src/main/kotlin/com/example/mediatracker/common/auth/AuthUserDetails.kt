@@ -1,11 +1,11 @@
 package com.example.mediatracker.common.auth
 
-import com.example.mediatracker.domain.entity.User
+import com.example.jooq.generated.tables.pojos.Users
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class AuthUserDetails(private val user: User) : UserDetails {
+class AuthUserDetails(private val user: Users) : UserDetails {
 
     override fun getUsername() = user.username
     override fun getPassword() = user.passwordHash

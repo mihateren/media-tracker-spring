@@ -1,5 +1,6 @@
 package com.example.mediatracker.api.dto.auth
 
+import com.example.mediatracker.common.constants.UserDetailsConstants
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -17,11 +18,16 @@ data class LoginRequest(
     val email: String,
 
     @field:Schema(
-        description = "Пароль (мин. 8 символов, буквы и цифры)",
+        description = "Пароль (мин. ${UserDetailsConstants.minPasswordLength} символов, буквы и цифры)",
         example = "Password123"
     )
     @field:NotBlank
-    @field:Size(min = 8, max = 64, message = "Пароль должен быть от 8 до 64 символов")
+    @field:Size(
+        min = UserDetailsConstants.minPasswordLength,
+        max = UserDetailsConstants.maxPasswordLength,
+        message = "Пароль должен быть от ${UserDetailsConstants.minPasswordLength}" +
+                " до ${UserDetailsConstants.maxPasswordLength} символов"
+    )
     @field:Pattern(
         regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$",
         message = "Пароль может содержать только буквы латинского алфавита или цифры"

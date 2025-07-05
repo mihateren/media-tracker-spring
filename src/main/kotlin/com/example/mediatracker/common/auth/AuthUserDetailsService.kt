@@ -1,6 +1,6 @@
 package com.example.mediatracker.common.auth
 
-import com.example.mediatracker.domain.repository.UserRepository
+import com.example.mediatracker.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException

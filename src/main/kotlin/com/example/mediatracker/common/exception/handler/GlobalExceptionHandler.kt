@@ -1,9 +1,11 @@
 package com.example.mediatracker.common.exception.handler
 
 import com.example.mediatracker.common.exception.dto.ErrorResponse
+import com.example.mediatracker.common.exception.entity.AccessDeniedException
 import com.example.mediatracker.common.exception.entity.EntityNotFoundException
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
+import com.example.mediatracker.common.exception.entity.InvitationException
 import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -58,4 +60,12 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgument(ex: IllegalArgumentException) =
         buildErrorMessage(HttpStatus.BAD_REQUEST, ex.message)
+
+    @ExceptionHandler(InvitationException::class)
+    fun handleInvitation(ex: InvitationException) =
+        buildErrorMessage(HttpStatus.BAD_REQUEST, ex.message)
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(ex: AccessDeniedException) =
+        buildErrorMessage(HttpStatus.FORBIDDEN, ex.message)
 }
