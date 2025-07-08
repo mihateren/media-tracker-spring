@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class InvitationService(
     private val userRepository: UserRepository,
     private val invitationRepository: InvitationRepository,
+    private val pairService: PairService,
 ) {
 
     @Transactional
@@ -39,38 +40,44 @@ class InvitationService(
         invitationRepository.save(invitation)
     }
 
-    fun getAllInvitations(userId: Long, statusDto: InvitationStatus?) =
+    fun getAllInvitations(userId: Long, statusDto: InvitationStatus?): List<Invitations> =
         invitationRepository.findByUserIdAndStatus(userId, statusDto)
 
-    // TODO создать запись в таблице пары
-    fun acceptInvitation(userId: Long, invId: Long) {
-        val invitation = invitationRepository.getByInvId(invId)
+    // TODO создать запись в таблице пары + удалить приглос
+    @Transactional
+    fun acceptInvitation(userId: Long, inviterId: Long): Unit {
+        val invitation = invitationRepository.getByInviterId(inviterId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviteeId != userId) throw AccessDeniedException()
         if (invitation.status == InvitationStatus.accepted) return
 
-        invitationRepository.changeStatus(invId, InvitationStatus.accepted)
+        invitationRepository.changeStatus(inviterId, InvitationStatus.accepted)
+        pairService.createPair(inviterId, invitation.inviteeId!!)
+
+        invitationRepository.deleteById(invitation.id!!)
     }
 
-    fun rejectInvitation(userId: Long, invId: Long) {
-        val invitation = invitationRepository.getByInvId(invId)
+    @Transactional
+    fun rejectInvitation(userId: Long, inviterId: Long): Unit {
+        val invitation = invitationRepository.getByInviterId(inviterId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviteeId != userId) throw AccessDeniedException()
         if (invitation.status == InvitationStatus.rejected) return
 
-        invitationRepository.changeStatus(invId, InvitationStatus.rejected)
+        invitationRepository.changeStatus(inviterId, InvitationStatus.rejected)
     }
 
-    fun cancelInvitation(userId: Long, invId: Long) {
-        val invitation = invitationRepository.getByInvId(invId)
+    @Transactional
+    fun cancelInvitation(userId: Long, inviterId: Long): Unit {
+        val invitation = invitationRepository.getByInviterId(inviterId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviterId != userId) throw AccessDeniedException()
         if (invitation.status == InvitationStatus.canceled) return
 
-        invitationRepository.changeStatus(invId, InvitationStatus.canceled)
+        invitationRepository.changeStatus(inviterId, InvitationStatus.canceled)
     }
 
 }

@@ -26,7 +26,7 @@ class UserService(
     @Transactional
     fun updateUser(userId: Long, request: UpdateUserRequest) {
         require(request.username != null || request.avatarUrl != null) {
-            "Пустой PATCH – нечего обновлять"
+            "Пустой запрос – нечего обновлять"
         }
 
         request.username?.let {

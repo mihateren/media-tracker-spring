@@ -11,9 +11,9 @@ class InvitationRepository(
     private val dsl: DSLContext
 ) {
 
-    fun getByInvId(invId: Long): Invitations? =
+    fun getByInviterId(id: Long): Invitations? =
         dsl.selectFrom(INVITATIONS)
-            .where(INVITATIONS.ID.eq(invId))
+            .where(INVITATIONS.ID.eq(id))
             .fetchOne()
             ?.into(Invitations::class.java)
 
@@ -35,7 +35,6 @@ class InvitationRepository(
         } else {
             dsl.update(INVITATIONS)
                 .set(INVITATIONS.STATUS, pojo.status ?: InvitationStatus.pending)
-                .set(INVITATIONS.PAIR_ID, pojo.pairId)
                 .where(INVITATIONS.ID.eq(pojo.id))
                 .execute()
             pojo
@@ -57,12 +56,17 @@ class InvitationRepository(
             .orderBy(INVITATIONS.CREATED_AT.desc())
             .fetchInto(Invitations::class.java)
 
-    fun changeStatus(invId: Long, status: InvitationStatus): Unit = run {
+    fun changeStatus(id: Long, status: InvitationStatus) {
         dsl.update(INVITATIONS)
             .set(INVITATIONS.STATUS, status)
-            .where(INVITATIONS.ID.eq(invId))
+            .where(INVITATIONS.ID.eq(id))
             .execute()
     }
 
+    fun deleteById(id: Long) {
+        dsl.delete(INVITATIONS)
+            .where(INVITATIONS.ID.eq(id))
+            .execute()
+    }
 
 }
