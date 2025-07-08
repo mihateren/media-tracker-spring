@@ -11,7 +11,6 @@ import org.jooq.meta.jaxb.Strategy
 plugins {
     kotlin("jvm") version "2.2.0"
     kotlin("plugin.spring") version "2.2.0"
-    kotlin("kapt") version "2.2.0"
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("nu.studer.jooq") version "8.2.3"
@@ -33,7 +32,6 @@ repositories {
 extra["springCloudVersion"] = "2025.0.0"
 
 val jooqVersion = "3.20.5"
-val mapstructVersion = "1.5.5.Final"
 
 dependencyManagement {
     imports {
@@ -51,7 +49,6 @@ dependencies {
         exclude(group = "javax.servlet")
     }
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // Kotlin
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.0.21"))
@@ -76,10 +73,6 @@ dependencies {
     // Jooq
     implementation("org.jooq:jooq:$jooqVersion")
     jooqGenerator("org.jooq:jooq-meta-extensions:$jooqVersion")
-
-    // Mapstruct
-    implementation("org.mapstruct:mapstruct:$mapstructVersion")
-    kapt("org.mapstruct:mapstruct-processor:$mapstructVersion")
 }
 
 jooq {
@@ -98,6 +91,11 @@ jooq {
                         .withSpringAnnotations(true)
                         .withSpringDao(true)
                         .withJavaTimeTypes(true)
+                        .withKotlinNotNullPojoAttributes(true)
+                        .withKotlinNotNullRecordAttributes(true)
+                        .withKotlinNotNullInterfaceAttributes(true)
+                        .withPojosEqualsAndHashCode(true)
+                        .withFluentSetters(true)
 
                     database = org.jooq.meta.jaxb.Database().apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
@@ -105,7 +103,8 @@ jooq {
                             Property().withKey("scripts").withValue("src/main/resources/db/changelog/schema/*.sql"),
                             Property().withKey("sort").withValue("alphanumeric"),
                             Property().withKey("defaultNameCase").withValue("lower"),
-
+// TODO: добавить профили градла для жука и ликвы
+//                            перенести генерацию в src
                             Property().withKey("parseIgnoreComments").withValue("true"),
                             Property().withKey("parseIgnoreCommentStart").withValue("[jooq ignore start]"),
                             Property().withKey("parseIgnoreCommentStop").withValue("[jooq ignore stop]")

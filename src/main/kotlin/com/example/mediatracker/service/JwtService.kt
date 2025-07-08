@@ -1,78 +1,68 @@
 package com.example.mediatracker.service
 
 import com.example.jooq.generated.tables.pojos.Users
+import com.example.mediatracker.common.auth.AuthUserDetails
 import com.example.mediatracker.common.props.JwtProperties
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.time.Instant
-import java.util.Date
+import java.util.*
 import javax.crypto.SecretKey
 
 @Service
-class JwtService(
-    props: JwtProperties
-) {
-
-    companion object {
-        private const val CLAIM_TYPE = "typ"
-        private const val CLAIM_USER = "username"
-
-        private const val TYPE_ACCESS = "access"
-        private const val TYPE_REFRESH = "refresh"
-    }
+class JwtService(props: JwtProperties) {
 
     private val authKey: SecretKey = Keys.hmacShaKeyFor(props.authSecret.toByteArray(StandardCharsets.UTF_8))
 
     private val accessTtl = Duration.ofMinutes(props.expiration.accessMin)
     private val refreshTtl = Duration.ofDays(props.expiration.refreshDays)
 
+    private enum class TokenType(val value: String) { ACCESS("access"), REFRESH("refresh") }
 
-    fun generateAccessToken(user: Users) = buildToken(user, accessTtl, TYPE_ACCESS, authKey)
-    fun generateRefreshToken(user: Users) = buildToken(user, refreshTtl, TYPE_REFRESH, authKey)
+    fun generateAccessToken(user: Users): String =
+        buildToken(user, accessTtl, TokenType.ACCESS)
 
-
-    fun validateAccessToken(token: String) = validate(token, TYPE_ACCESS)
-    fun validateRefreshToken(token: String) = validate(token, TYPE_REFRESH)
-
-
-    fun extractUsername(token: String): String =
-        claims(token).get(CLAIM_USER, String::class.java)
-
-    fun extractUserId(token: String): Long =
-        claims(token).subject.toLong()
+    fun generateRefreshToken(user: Users): String =
+        buildToken(user, refreshTtl, TokenType.REFRESH)
 
 
-    private fun buildToken(
-        user: Users,
-        ttl: Duration,
-        type: String,
-        key: SecretKey
-    ): String =
+    fun validateAccessToken(token: String, user: UserDetails): Boolean =
+        validateToken(token, user, TokenType.ACCESS)
+
+    fun validateRefreshToken(token: String, user: UserDetails): Boolean =
+        validateToken(token, user, TokenType.REFRESH)
+
+    private fun buildToken(user: Users, ttl: Duration, type: TokenType): String =
         Jwts.builder()
             .subject(user.id.toString())
-            .claim(CLAIM_TYPE, type)
-            .claim(CLAIM_USER, user.username)
+            .claim("typ", type.value)
+            .claim("username", user.username)
             .issuedAt(Date.from(Instant.now()))
             .expiration(Date.from(Instant.now().plus(ttl)))
-            .signWith(key, Jwts.SIG.HS512)
+            .signWith(authKey, Jwts.SIG.HS512)
             .compact()
 
-    private fun claims(token: String): Claims =
-        parseWithKey(token, authKey)
-
-    private fun parseWithKey(token: String, key: SecretKey): Claims =
+    private fun parseClaims(token: String): Claims =
         Jwts.parser()
-            .verifyWith(key)
+            .verifyWith(authKey)
             .build()
             .parseSignedClaims(token)
             .payload
 
-    private fun validate(token: String, expectedType: String): Boolean = runCatching {
-        val c = claims(token)
-        c[CLAIM_TYPE] == expectedType
-    }.getOrDefault(false)
+    private fun validateToken(token: String, userDetails: UserDetails, expectedType: TokenType): Boolean {
+        val claims = parseClaims(token)
+        val tokenSubject = claims.subject
+        val tokenTypeClaim = claims["typ", String::class.java]
+
+        return tokenSubject.equals(userDetails.username.toString())
+                && tokenTypeClaim == expectedType.value
+                && claims.expiration.after(Date())
+    }
+
+    fun getSubject(token: String): String = parseClaims(token).subject
 }

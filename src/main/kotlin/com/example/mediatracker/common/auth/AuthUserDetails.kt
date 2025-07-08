@@ -1,20 +1,22 @@
 package com.example.mediatracker.common.auth
 
-import com.example.jooq.generated.tables.pojos.Users
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class AuthUserDetails(private val user: Users) : UserDetails {
+class AuthUserDetails(
+    private val id: Long,
+    private val password: String,
+    private val roles: List<String>
+) : UserDetails {
 
-    override fun getUsername() = user.username
-    override fun getPassword() = user.passwordHash
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
+        roles.map { SimpleGrantedAuthority(it) }.toMutableSet()
 
-    override fun getAuthorities(): Collection<GrantedAuthority> =
-        listOf(SimpleGrantedAuthority("ROLE_USER"))
+    override fun getPassword(): String = password
 
-    override fun isAccountNonExpired() = true
-    override fun isAccountNonLocked() = true
-    override fun isCredentialsNonExpired() = true
-    override fun isEnabled() = true
+    override fun getUsername(): String = id.toString()
+
+    fun userId(): Long = id
+
 }

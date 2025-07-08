@@ -14,6 +14,8 @@ class InvitationRepository(
     fun getByInvId(invId: Long): Invitations? =
         dsl.selectFrom(INVITATIONS)
             .where(INVITATIONS.ID.eq(invId))
+            .fetchOne()
+            ?.into(Invitations::class.java)
 
     fun existsPending(inviterId: Long, inviteeId: Long): Boolean =
         dsl.fetchExists(

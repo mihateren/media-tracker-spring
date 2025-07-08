@@ -1,6 +1,7 @@
 package com.example.mediatracker.api.dto.user
 
-import com.example.mediatracker.common.constants.UserDetailsConstants
+import com.example.mediatracker.common.constants.maxUsernameLength
+import com.example.mediatracker.common.constants.minUsernameLength
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -14,10 +15,10 @@ class UpdateUserRequest(
     )
     @field:NotBlank
     @field:Size(
-        min = UserDetailsConstants.minUsernameLength,
-        max = UserDetailsConstants.maxUsernameLength,
-        message = "Длина username — от ${UserDetailsConstants.minUsernameLength} до " +
-                "${UserDetailsConstants.maxUsernameLength} символов"
+        min = minUsernameLength,
+        max = maxUsernameLength,
+        message = "Длина username — от ${minUsernameLength} до " +
+                "${maxUsernameLength} символов"
     )
     val username: String?,
 
