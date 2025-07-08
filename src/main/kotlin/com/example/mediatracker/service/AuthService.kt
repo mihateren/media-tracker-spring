@@ -36,7 +36,7 @@ class AuthService(
         )
 
         userRepository.saveProfile(
-            UsersProfiles(userId = user.id)
+            UsersProfiles(userId = user.id!!)
         )
     }
 
