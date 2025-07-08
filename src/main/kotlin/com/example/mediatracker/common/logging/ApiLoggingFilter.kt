@@ -1,5 +1,6 @@
 package com.example.mediatracker.common.logging
 
+import com.example.mediatracker.common.constants.WHITE_LIST
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -19,11 +20,9 @@ import java.util.concurrent.TimeUnit
 class ApiLoggingFilter : OncePerRequestFilter() {
 
     private val mvc = PathPatternRequestMatcher.withDefaults()
+
     private val excluded = listOf(
-        mvc.matcher("/swagger-ui/**"),
-        mvc.matcher("/v3/api-docs/**"),
-        mvc.matcher("/swagger-resources/**"),
-        mvc.matcher("/webjars/**")
+        *WHITE_LIST.map { mvc.matcher(it) }.toTypedArray()
     )
 
     private val log = LoggerFactory.getLogger(ApiLoggingFilter::class.java)

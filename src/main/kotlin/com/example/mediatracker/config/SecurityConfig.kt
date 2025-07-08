@@ -1,5 +1,7 @@
 package com.example.mediatracker.config
 
+import com.example.mediatracker.common.auth.JwtAuthFilter
+import com.example.mediatracker.common.constants.WHITE_LIST
 import com.example.mediatracker.common.props.JwtProperties
 import com.example.mediatracker.common.exception.handler.AuthExceptionHandler
 import io.jsonwebtoken.security.Keys
@@ -12,30 +14,14 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm
-import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
-import java.nio.charset.StandardCharsets
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 class SecurityConfig(
     private val authEntryPoint: AuthExceptionHandler,
-    private val props: JwtProperties
+    private val jwtAuthFilter: JwtAuthFilter,
 ) {
-
-    @Bean
-    fun jwtAuthConverter() = JwtAuthenticationConverter().apply {
-        setJwtGrantedAuthoritiesConverter { listOf(SimpleGrantedAuthority("ROLE_USER")) }
-    }
-
-    @Bean
-    fun jwtDecoder(): JwtDecoder =
-        NimbusJwtDecoder
-            .withSecretKey(Keys.hmacShaKeyFor(props.authSecret.toByteArray(StandardCharsets.UTF_8)))
-            .macAlgorithm(MacAlgorithm.HS512)
-            .build()
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -43,26 +29,20 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
-        jwtAuthenticationConverter: JwtAuthenticationConverter
     ): SecurityFilterChain =
         http
             .csrf { it.disable() }
             .cors(Customizer.withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .exceptionHandling { it.authenticationEntryPoint(authEntryPoint) }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/v3/api-docs.yaml",
-                        "/webjars/**"
-                    ).permitAll()
+            .authorizeHttpRequests {
+                it.requestMatchers(
+                    *WHITE_LIST.toTypedArray()
+                )
+                    .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated()
             }
-            .oauth2ResourceServer {
-                it.jwt { jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter) }
-            }
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
 }

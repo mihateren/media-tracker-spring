@@ -1,16 +1,14 @@
 package com.example.mediatracker.api.controller
 
 import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
-import com.example.mediatracker.common.constants.SecurityConstants
+import com.example.mediatracker.common.constants.BEARER_AUTH
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
-import com.example.mediatracker.common.extension.userId
 import com.example.mediatracker.service.PairService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.websocket.server.PathParam
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/pairs")
-@SecurityRequirement(name = SecurityConstants.BEARER_AUTH)
+@SecurityRequirement(name = BEARER_AUTH)
 @Tag(name = "Pairs")
 class PairsController(
     private val pairService: PairService

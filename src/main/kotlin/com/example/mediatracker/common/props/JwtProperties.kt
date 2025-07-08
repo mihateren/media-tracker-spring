@@ -11,6 +11,5 @@ data class JwtProperties(
     data class Expiration(
         val accessMin: Long,
         val refreshDays: Long,
-        val inviteDays: Long
     )
 }
