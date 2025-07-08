@@ -24,6 +24,7 @@ jwt:
   expiration:
     access-min: 30
     refresh-days: 7
+    invite-days: 7
 
 logging:
   level:
