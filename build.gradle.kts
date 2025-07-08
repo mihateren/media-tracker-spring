@@ -91,7 +91,11 @@ jooq {
                         .withSpringAnnotations(true)
                         .withSpringDao(true)
                         .withJavaTimeTypes(true)
-//                    TODO добавить флаг на проверку null
+                        .withKotlinNotNullPojoAttributes(true)
+                        .withKotlinNotNullRecordAttributes(true)
+                        .withKotlinNotNullInterfaceAttributes(true)
+                        .withPojosEqualsAndHashCode(true)
+                        .withFluentSetters(true)
 
                     database = org.jooq.meta.jaxb.Database().apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
