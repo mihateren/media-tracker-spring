@@ -34,11 +34,11 @@ class PairController(
         @PathVariable pairId: Long
     ) = pairService.exitPair(jwt.userId(), pairId)
 
-//    @GetMapping("/{pairId}/media")
-//    fun getPairMedia(
-//        @PathVariable pairId: Long,
-//        @AuthenticationPrincipal jwt: Jwt
-//    ) = pairService.media.list(pairId, jwt.userId)
+    @GetMapping("/{pairId}/media")
+    fun getPairMedia(
+        @PathVariable pairId: Long,
+        @AuthenticationPrincipal jwt: AuthUserDetails
+    ) = pairService.getMediaList(jwt.userId(), pairId)
 //
 //    @PostMapping("/{pairId}/media/{kpId}")
 //    fun addMedia(

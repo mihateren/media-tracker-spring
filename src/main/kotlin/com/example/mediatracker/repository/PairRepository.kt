@@ -5,9 +5,6 @@ import com.example.jooq.generated.tables.pojos.Pairs
 import com.example.jooq.generated.tables.references.PAIRS
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import kotlin.and
-import kotlin.or
-import kotlin.text.set
 
 @Repository
 class PairRepository(

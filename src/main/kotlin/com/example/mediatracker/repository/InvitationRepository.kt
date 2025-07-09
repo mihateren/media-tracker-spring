@@ -11,7 +11,7 @@ class InvitationRepository(
     private val dsl: DSLContext
 ) {
 
-    fun getByInviterId(id: Long): Invitations? =
+    fun getByInvitationId(id: Long): Invitations? =
         dsl.selectFrom(INVITATIONS)
             .where(INVITATIONS.ID.eq(id))
             .fetchOne()
