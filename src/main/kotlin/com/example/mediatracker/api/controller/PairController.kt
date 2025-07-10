@@ -59,10 +59,10 @@ class PairController(
         @AuthenticationPrincipal jwt: AuthUserDetails
     ) = pairService.changeMediaState(jwt.userId(), pairId, mediaId, request)
 
-//    @DeleteMapping("/{pairId}/media/{mediaId}")
-//    fun removeMedia(
-//        @PathVariable pairId: Long,
-//        @PathVariable mediaId: Long,
-//        @AuthenticationPrincipal jwt: Jwt
-//    ) = pairService.media.remove(pairId, mediaId, jwt.userId)
+    @DeleteMapping("/{pairId}/media/{mediaId}")
+    fun removeMedia(
+        @PathVariable pairId: Long,
+        @PathVariable mediaId: Long,
+        @AuthenticationPrincipal jwt: AuthUserDetails
+    ) = pairService.removeMediaFromPair(jwt.userId(), pairId, mediaId)
 }

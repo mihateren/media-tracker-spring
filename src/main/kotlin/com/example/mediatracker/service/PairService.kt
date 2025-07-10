@@ -126,6 +126,15 @@ class PairService(
         pairRepository.savePairMedia(pairMedia)
     }
 
+    fun removeMediaFromPair(userId: Long, pairId: Long, mediaId: Long): Unit {
+        val pair = findPair(pairId)
+        if (!isUserInPair(userId, pair)) throw PairException()
+
+        val pairMedia = pairRepository.findByMediaId(mediaId)
+            ?: throw EntityNotFoundException("Медиа с id $mediaId не найдено")
+        pairRepository.deletePairMedia(pairId, mediaId)
+    }
+
     private fun isUserInPair(userId: Long, pair: Pairs) =
         pair.firstUserId == userId || pair.secondUserId == userId
 

@@ -85,6 +85,12 @@ class PairRepository(
                 .fetchSingle()
         }
         return record.into(PairMedia::class.java)
+    }
 
+    fun deletePairMedia(pairId: Long, mediaId: Long) {
+        dsl.deleteFrom(PAIR_MEDIA)
+            .where(PAIR_MEDIA.PAIR_ID.eq(pairId))
+            .and(PAIR_MEDIA.MEDIA_ID.eq(mediaId))
+            .execute()
     }
 }
