@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -39,14 +40,14 @@ class PairController(
         @PathVariable pairId: Long,
         @AuthenticationPrincipal jwt: AuthUserDetails
     ) = pairService.getMediaList(jwt.userId(), pairId)
-//
-//    @PostMapping("/{pairId}/media/{kpId}")
-//    fun addMedia(
-//        @PathVariable pairId: Long,
-//        @PathVariable kpId: Long,
-//        @AuthenticationPrincipal jwt: Jwt
-//    ) = pairService.media.add(pairId, kpId, jwt.userId)
-//
+
+    @PostMapping("/{pairId}/media/{kpId}")
+    fun addMedia(
+        @PathVariable pairId: Long,
+        @PathVariable kpId: Long,
+        @AuthenticationPrincipal jwt: AuthUserDetails
+    ) = pairService.addMedia(jwt.userId(), pairId, kpId)
+
 //    @PatchMapping("/{pairId}/media/{mediaId}")
 //    fun changeMediaState(
 //        @PathVariable pairId: Long,

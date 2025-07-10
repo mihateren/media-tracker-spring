@@ -1,24 +1,25 @@
 package com.example.mediatracker.service
 
 import com.example.jooq.generated.enums.PairStatus
-import com.example.jooq.generated.tables.pojos.Invitations
+import com.example.jooq.generated.tables.pojos.Media
 import com.example.jooq.generated.tables.pojos.Pairs
 import com.example.mediatracker.api.dto.media.MediaDto
 import com.example.mediatracker.common.exception.entity.EntityNotFoundException
+import com.example.mediatracker.common.exception.entity.KinopoiskException
 import com.example.mediatracker.common.exception.entity.PairException
 import com.example.mediatracker.external.KinopoiskClient
-import com.example.mediatracker.repository.InvitationRepository
 import com.example.mediatracker.repository.MediaRepository
 import com.example.mediatracker.repository.PairRepository
-import com.example.mediatracker.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import com.example.jooq.generated.enums.MediaType
 
 @Service
 class PairService(
     private val pairRepository: PairRepository,
     private val mediaRepository: MediaRepository,
-    private val kinopoiskClient: KinopoiskClient,
+    private val mediaService: MediaService,
+    private val genreService: GenreService,
 ) {
 
     @Transactional
@@ -31,14 +32,11 @@ class PairService(
     }
 
     fun getActiveList(userId: Long): List<Pairs> =
-        pairRepository.getActivePairs(userId)
-
+        pairRepository.findActivatePair(userId)
 
     @Transactional
     fun exitPair(userId: Long, pairId: Long): Unit {
-        val pair = pairRepository.getById(pairId)
-            ?: throw EntityNotFoundException("Пара с id $pairId не найдена")
-
+        val pair = findPair(userId)
         if (!isUserInPair(userId, pair))
             throw PairException()
 
@@ -57,27 +55,53 @@ class PairService(
     }
 
     fun getMediaList(userId: Long, pairId: Long): List<MediaDto> {
-        val pair = pairRepository.getById(pairId)
-            ?: throw EntityNotFoundException("Пара с id $pairId не найдена")
-
+        val pair = findPair(pairId)
         if (!isUserInPair(userId, pair))
             throw PairException()
 
-        val mediaListDb = mediaRepository.getAllMediaByPairId(pairId)
+        val mediaListDb = mediaRepository.findAllMediaByPairId(pairId)
         return mediaListDb.map { media ->
-            val details = kinopoiskClient.getMediaDetailsById(media.kinopoiskId)
+            val details = mediaService.getMediaDetailsById(media.kinopoiskId)
             MediaDto(
                 id = media.id!!,
                 kinopoiskId = media.kinopoiskId,
                 type = media.type.toString(),
                 title = media.title,
-                details = details
+                details = details!!
             )
         }.toMutableList()
     }
 
 
-    private fun isUserInPair(userId: Long, pair: Pairs): Boolean {
-        return pair.firstUserId == userId || pair.secondUserId == userId
+    @Transactional
+    fun addMedia(userId: Long, pairId: Long, kpId: Long) {
+        val pair = findPair(pairId)
+        if (!isUserInPair(userId, pair))
+            throw PairException()
+
+        val media = mediaRepository.findById(kpId)
+        if (media == null) {
+            val mediaDetails = mediaService.getMediaDetailsById(kpId)
+                ?: throw KinopoiskException("В системе кинопоиска не нашлось медиа с id $kpId")
+
+            val mediaTitle = mediaDetails.nameRu ?: mediaDetails.nameEn ?: mediaDetails.nameOriginal ?: "Untitled"
+            val mediaType = if (mediaDetails.serial == true) MediaType.series else MediaType.film
+
+            mediaRepository.save(
+                Media(
+                    kinopoiskId = kpId,
+                    title = mediaTitle,
+                    type = mediaType
+                )
+            )
+            genreService.addGenresFromMedia(mediaDetails, media?.id!!)
+        }
     }
+
+    private fun isUserInPair(userId: Long, pair: Pairs) =
+        pair.firstUserId == userId || pair.secondUserId == userId
+
+    private fun findPair(pairId: Long) =
+        pairRepository.findById(pairId)
+            ?: throw EntityNotFoundException("Пара с id $pairId не найдена")
 }

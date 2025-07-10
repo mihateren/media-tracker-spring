@@ -11,7 +11,7 @@ class PairRepository(
     private val dsl: DSLContext
 ) {
 
-    fun getById(id: Long): Pairs? =
+    fun findById(id: Long): Pairs? =
         dsl.selectFrom(PAIRS)
             .where(PAIRS.PAIR_ID.eq(id))
             .fetchOne()
@@ -20,26 +20,20 @@ class PairRepository(
     fun save(pojo: Pairs): Pairs {
         return if (pojo.pairId == null) {
             pojo.status = PairStatus.active
-            val rec = dsl.newRecord(PAIRS)
-            rec.from(pojo)
+            val rec = dsl.newRecord(PAIRS, pojo)
             rec.store()
             rec.into(Pairs::class.java)
         } else {
+            val record = dsl.newRecord(PAIRS, pojo)
             dsl.update(PAIRS)
-                .set(
-                    mapOf(
-                        PAIRS.FIRST_USER_ID to pojo.firstUserId,
-                        PAIRS.SECOND_USER_ID to pojo.secondUserId,
-                        PAIRS.STATUS to pojo.status,
-                    )
-                )
+                .set(record)
                 .where(PAIRS.PAIR_ID.eq(pojo.pairId))
                 .execute()
             pojo
         }
     }
 
-    fun getActivePairs(userId: Long): List<Pairs> =
+    fun findActivatePair(userId: Long): List<Pairs> =
         dsl.selectFrom(PAIRS)
             .where(
                 PAIRS.STATUS.eq(PairStatus.active)

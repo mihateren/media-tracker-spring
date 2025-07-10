@@ -6,6 +6,7 @@ import com.example.mediatracker.common.exception.entity.EntityNotFoundException
 import com.example.mediatracker.common.exception.entity.InvalidCredentialsException
 import com.example.mediatracker.common.exception.entity.InvalidTokenException
 import com.example.mediatracker.common.exception.entity.InvitationException
+import com.example.mediatracker.common.exception.entity.KinopoiskException
 import com.example.mediatracker.common.exception.entity.UserAlreadyExistsException
 import com.example.mediatracker.common.exception.entity.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -68,4 +69,8 @@ class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDenied(ex: AccessDeniedException) =
         buildErrorMessage(HttpStatus.FORBIDDEN, ex.message)
+
+    @ExceptionHandler(KinopoiskException::class)
+    fun handleKinopoisk(ex: KinopoiskException) =
+        buildErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, ex.message)
 }
