@@ -13,6 +13,8 @@ import com.example.mediatracker.repository.PairRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import com.example.jooq.generated.enums.MediaType
+import com.example.jooq.generated.tables.pojos.PairMedia
+import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
 
 @Service
 class PairService(
@@ -74,12 +76,12 @@ class PairService(
 
 
     @Transactional
-    fun addMedia(userId: Long, pairId: Long, kpId: Long) {
+    fun addMedia(userId: Long, pairId: Long, kpId: Int) {
         val pair = findPair(pairId)
         if (!isUserInPair(userId, pair))
             throw PairException()
 
-        val media = mediaRepository.findById(kpId)
+        val media = mediaRepository.findByKinopoiskId(kpId)
         if (media == null) {
             val mediaDetails = mediaService.getMediaDetailsById(kpId)
                 ?: throw KinopoiskException("В системе кинопоиска не нашлось медиа с id $kpId")
@@ -95,7 +97,33 @@ class PairService(
                 )
             )
             genreService.addGenresFromMedia(mediaDetails, media?.id!!)
+            pairRepository.savePairMedia(
+                PairMedia(
+                    pairId = pairId,
+                    mediaId = media.id!!,
+                    addedBy = userId
+                )
+            )
         }
+    }
+
+    fun changeMediaState(
+        userId: Long,
+        pairId: Long,
+        mediaId: Long,
+        request: ChangeMediaStateRequest
+    ): Unit {
+        val pair = findPair(pairId)
+        if (!isUserInPair(userId, pair)) throw PairException()
+
+        val pairMedia = pairRepository.findByMediaId(mediaId)
+            ?: throw EntityNotFoundException("Медиа с id $mediaId не найдено")
+
+        request.mediaState?.let { pairMedia.state = it }
+        request.rating?.let { pairMedia.rating = it }
+        request.review?.let { pairMedia.review = it }
+
+        pairRepository.savePairMedia(pairMedia)
     }
 
     private fun isUserInPair(userId: Long, pair: Pairs) =

@@ -20,7 +20,6 @@ class GenreRepository(
             ?.into(Genres::class.java)
     }
 
-
     fun save(pojo: Genres): Genres {
         val rec = dsl.newRecord(GENRES, pojo)
         rec.store()

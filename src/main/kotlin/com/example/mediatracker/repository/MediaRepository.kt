@@ -12,14 +12,16 @@ class MediaRepository(
 ) {
 
     fun findAllMediaByPairId(pairId: Long): List<Media> =
-        dsl.selectFrom(MEDIA)
+        dsl.select(MEDIA.asterisk())
+            .from(MEDIA)
+            .join(PAIR_MEDIA).on(MEDIA.ID.eq(PAIR_MEDIA.MEDIA_ID))
             .where(PAIR_MEDIA.PAIR_ID.eq(pairId))
-            .orderBy(PAIR_MEDIA.CREATED_AT)
+            .orderBy(PAIR_MEDIA.CREATED_AT.asc())
             .fetchInto(Media::class.java)
 
-    fun findById(id: Long): Media? =
+    fun findByKinopoiskId(kinopoiskId: Int): Media? =
         dsl.selectFrom(MEDIA)
-            .where(PAIR_MEDIA.PAIR_ID.eq(id))
+            .where(MEDIA.KINOPOISK_ID.eq(kinopoiskId))
             .fetchOne()
             ?.into(Media::class.java)
 
@@ -37,5 +39,11 @@ class MediaRepository(
             pojo
         }
     }
+
+    fun findById(id: Long): Media? =
+        dsl.selectFrom(MEDIA)
+            .where(MEDIA.ID.eq(id))
+            .fetchOne()
+            ?.into(Media::class.java)
 
 }

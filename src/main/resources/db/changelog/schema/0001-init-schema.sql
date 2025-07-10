@@ -59,7 +59,7 @@ CREATE UNIQUE INDEX unq_invite_pending_user
 CREATE TABLE media
 (
     id           BIGSERIAL PRIMARY KEY,
-    kinopoisk_id BIGINT       NOT NULL UNIQUE,
+    kinopoisk_id INTEGER      NOT NULL UNIQUE,
     type         media_type   NOT NULL,
     title        VARCHAR(200) NOT NULL,
     cached_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()

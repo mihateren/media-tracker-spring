@@ -20,6 +20,6 @@ interface KinopoiskClient {
 
     @GetMapping("/api/v2.2/films/{id}", produces = ["application/json"])
     fun getMediaDetailsById(
-        @PathVariable("id") id: Long,
+        @PathVariable("id") id: Int,
     ): ResponseEntity<MediaDetailsResponse>
 }

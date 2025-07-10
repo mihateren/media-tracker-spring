@@ -1,8 +1,11 @@
 package com.example.mediatracker.repository
 
 import com.example.jooq.generated.enums.PairStatus
+import com.example.jooq.generated.tables.pojos.PairMedia
 import com.example.jooq.generated.tables.pojos.Pairs
+import com.example.jooq.generated.tables.references.MEDIA
 import com.example.jooq.generated.tables.references.PAIRS
+import com.example.jooq.generated.tables.references.PAIR_MEDIA
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 
@@ -51,5 +54,37 @@ class PairRepository(
                 PAIRS.PAIR_ID.eq(id)
             )
             .execute()
+    }
+
+    fun findByMediaId(mediaId: Long): PairMedia? =
+        dsl.selectFrom(PAIR_MEDIA)
+            .where(PAIR_MEDIA.MEDIA_ID.eq(mediaId))
+            .fetchOne()
+            ?.into(PairMedia::class.java)
+
+    fun savePairMedia(pojo: PairMedia): PairMedia {
+        if (pojo.pairId == 0L || pojo.mediaId == 0L) {
+            val record = dsl.newRecord(PAIR_MEDIA).apply { from(pojo) }
+            record.store()
+            return record.into(PairMedia::class.java)
+        }
+
+        val inserted = dsl.insertInto(PAIR_MEDIA)
+            .set(PAIR_MEDIA.PAIR_ID, pojo.pairId)
+            .set(PAIR_MEDIA.MEDIA_ID, pojo.mediaId)
+            .onConflictDoNothing()
+            .returning()
+            .fetchOptional()
+
+        val record = inserted.orElseGet {
+            dsl.selectFrom(PAIR_MEDIA)
+                .where(
+                    PAIR_MEDIA.PAIR_ID.eq(pojo.pairId)
+                        .and(PAIR_MEDIA.MEDIA_ID.eq(pojo.mediaId))
+                )
+                .fetchSingle()
+        }
+        return record.into(PairMedia::class.java)
+
     }
 }

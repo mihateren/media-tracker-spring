@@ -1,5 +1,7 @@
 package com.example.mediatracker.service
 
+import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
+import com.example.mediatracker.common.auth.AuthUserDetails
 import com.example.mediatracker.common.exception.entity.KinopoiskException
 import com.example.mediatracker.external.KinopoiskClient
 import com.example.mediatracker.external.dto.MediaDetailsResponse
@@ -22,7 +24,7 @@ class MediaService(
         }
     }
 
-    fun getMediaDetailsById(id: Long): MediaDetailsResponse? {
+    fun getMediaDetailsById(id: Int): MediaDetailsResponse? {
         val response = kinopoiskClient.getMediaDetailsById(id)
         return when (response.statusCode) {
             response.statusCode -> response.body

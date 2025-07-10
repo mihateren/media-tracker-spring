@@ -1,5 +1,6 @@
 package com.example.mediatracker.api.controller
 
+import com.example.mediatracker.api.dto.media.ChangeMediaStateRequest
 import com.example.mediatracker.common.auth.AuthUserDetails
 import com.example.mediatracker.common.constants.BEARER_AUTH
 import com.example.mediatracker.service.PairService
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -44,18 +47,18 @@ class PairController(
     @PostMapping("/{pairId}/media/{kpId}")
     fun addMedia(
         @PathVariable pairId: Long,
-        @PathVariable kpId: Long,
+        @PathVariable kpId: Int,
         @AuthenticationPrincipal jwt: AuthUserDetails
     ) = pairService.addMedia(jwt.userId(), pairId, kpId)
 
-//    @PatchMapping("/{pairId}/media/{mediaId}")
-//    fun changeMediaState(
-//        @PathVariable pairId: Long,
-//        @PathVariable mediaId: Long,
-//        @RequestBody req: ChangeMediaStateRequest,
-//        @AuthenticationPrincipal jwt: Jwt
-//    ) = pairService.media.update(pairId, mediaId, jwt.userId, req)
-//
+    @PutMapping("/{pairId}/media/{mediaId}")
+    fun changeMediaState(
+        @PathVariable pairId: Long,
+        @PathVariable mediaId: Long,
+        @RequestBody request: ChangeMediaStateRequest,
+        @AuthenticationPrincipal jwt: AuthUserDetails
+    ) = pairService.changeMediaState(jwt.userId(), pairId, mediaId, request)
+
 //    @DeleteMapping("/{pairId}/media/{mediaId}")
 //    fun removeMedia(
 //        @PathVariable pairId: Long,
