@@ -3,6 +3,8 @@ package com.example.mediatracker.repository
 import com.example.jooq.generated.tables.references.INVITATIONS
 import com.example.jooq.generated.tables.pojos.Invitations
 import com.example.jooq.generated.enums.InvitationStatus
+import com.example.jooq.generated.tables.pojos.Users
+import com.example.jooq.generated.tables.references.USERS
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 
@@ -11,7 +13,7 @@ class InvitationRepository(
     private val dsl: DSLContext
 ) {
 
-    fun getByInvitationId(id: Long): Invitations? =
+    fun findByInvitationId(id: Long): Invitations? =
         dsl.selectFrom(INVITATIONS)
             .where(INVITATIONS.ID.eq(id))
             .fetchOne()
@@ -68,5 +70,4 @@ class InvitationRepository(
             .where(INVITATIONS.ID.eq(id))
             .execute()
     }
-
 }

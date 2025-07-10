@@ -21,20 +21,23 @@ class InvitationService(
 ) {
 
     @Transactional
-    // TODO добавить проверку на существование приглашения A->B B->A
     fun createForUser(inviterId: Long, request: InviteByUserIdRequest) {
         val inviterUser = userRepository.findById(inviterId)
             ?: throw UserNotFoundException(inviterId)
 
-        val inviteeId = request.userId
-        if (inviterId == inviteeId)
+        if (inviterId == request.userId)
             throw InvitationException("Нельзя пригласить самого себя")
 
-        val inviteeUser = userRepository.findById(inviteeId)
-            ?: throw UserNotFoundException(inviterId)
+        val inviteeUser = userRepository.findById(request.userId)
+            ?: throw UserNotFoundException(request.userId)
 
-        if (invitationRepository.existsPending(inviterId, inviteeId))
+        if (invitationRepository.existsPending(inviterId, request.userId)) {
             throw InvitationException("Приглашение уже отправлено")
+        }
+
+        if (invitationRepository.existsPending(request.userId, inviterId)) {
+            throw InvitationException("Вам уже отправлено приглашение от этого пользователя")
+        }
 
         val invitation = Invitations(
             inviterId = inviterUser.id!!,
@@ -48,7 +51,7 @@ class InvitationService(
 
     @Transactional
     fun acceptInvitation(userId: Long, invitationId: Long): Unit {
-        val invitation = invitationRepository.getByInvitationId(invitationId)
+        val invitation = invitationRepository.findByInvitationId(invitationId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviteeId != userId) throw AccessDeniedException()
@@ -63,7 +66,7 @@ class InvitationService(
 
     @Transactional
     fun rejectInvitation(userId: Long, invitationId: Long): Unit {
-        val invitation = invitationRepository.getByInvitationId(invitationId)
+        val invitation = invitationRepository.findByInvitationId(invitationId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviteeId != userId) throw AccessDeniedException()
@@ -74,7 +77,7 @@ class InvitationService(
 
     @Transactional
     fun cancelInvitation(userId: Long, invitationId: Long): Unit {
-        val invitation = invitationRepository.getByInvitationId(invitationId)
+        val invitation = invitationRepository.findByInvitationId(invitationId)
             ?: throw InvitationException("Ошибка - приглашение не найдено")
 
         if (invitation.inviterId != userId) throw AccessDeniedException()
