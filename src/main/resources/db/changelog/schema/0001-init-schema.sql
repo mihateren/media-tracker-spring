@@ -7,12 +7,12 @@ CREATE TYPE media_state AS ENUM ('queue','watching','watched');
 -- users
 CREATE TABLE users
 (
-    id         BIGSERIAL PRIMARY KEY,
-    username   VARCHAR(50) NOT NULL UNIQUE,
-    email      VARCHAR(50) NOT NULL UNIQUE,
-    password_hash   VARCHAR(60) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ
+    id            BIGSERIAL PRIMARY KEY,
+    username      VARCHAR(50) NOT NULL UNIQUE,
+    email         VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(60) NOT NULL,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ
 );
 
 -- users_profiles
@@ -30,11 +30,11 @@ CREATE INDEX idx_users_profiles_enabled ON users_profiles (enabled);
 CREATE TABLE pairs
 (
     pair_id        BIGSERIAL PRIMARY KEY,
-    first_user_id  BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    second_user_id BIGINT      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    first_user_id  BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    second_user_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
     status         pair_status NOT NULL DEFAULT 'active',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at     TIMESTAMPTZ,
     UNIQUE (first_user_id, second_user_id),
     CHECK (first_user_id < second_user_id)
 );
@@ -42,13 +42,12 @@ CREATE TABLE pairs
 -- invitations
 CREATE TABLE invitations
 (
-    id            BIGSERIAL PRIMARY KEY,
-    inviter_id    BIGINT            NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    invitee_id    BIGINT            NULL REFERENCES users (id) ON DELETE CASCADE,
-    status        invitation_status NOT NULL DEFAULT 'pending',
-    pair_id       BIGINT            NULL REFERENCES pairs (pair_id) ON DELETE SET NULL,
-    created_at    TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
-    updated_at    TIMESTAMPTZ
+    id         BIGSERIAL PRIMARY KEY,
+    inviter_id BIGINT            NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    invitee_id BIGINT            NULL REFERENCES users (id) ON DELETE CASCADE,
+    status     invitation_status NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMPTZ       NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ
 );
 
 -- уникальный pending-инвайт от A к B (по user_id)
@@ -60,7 +59,7 @@ CREATE UNIQUE INDEX unq_invite_pending_user
 CREATE TABLE media
 (
     id           BIGSERIAL PRIMARY KEY,
-    kinopoisk_id BIGINT       NOT NULL UNIQUE,
+    kinopoisk_id INTEGER      NOT NULL UNIQUE,
     type         media_type   NOT NULL,
     title        VARCHAR(200) NOT NULL,
     cached_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
@@ -90,7 +89,7 @@ CREATE TABLE pair_media
     rating     SMALLINT CHECK (rating BETWEEN 1 AND 10),
     review     TEXT,
     added_by   BIGINT      NOT NULL REFERENCES users (id),
-    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (pair_id, media_id)
 );

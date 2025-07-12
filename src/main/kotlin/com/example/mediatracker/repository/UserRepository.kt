@@ -13,20 +13,19 @@ class UserRepository(
     private val dsl: DSLContext
 ) {
 
-    fun save(user: Users): Users {
-        return if (user.id == null) {
+    fun save(pojo: Users): Users {
+        return if (pojo.id == null) {
             val rec = dsl.newRecord(USERS)
-            rec.from(user)
+            rec.from(pojo)
             rec.store()
             rec.into(Users::class.java)
         } else {
+            val record = dsl.newRecord(USERS, pojo)
             dsl.update(USERS)
-                .set(USERS.USERNAME, user.username)
-                .set(USERS.EMAIL, user.email)
-                .set(USERS.PASSWORD_HASH, user.passwordHash)
-                .where(USERS.ID.eq(user.id))
+                .set(record)
+                .where(USERS.ID.eq(pojo.id))
                 .execute()
-            user
+            pojo
         }
     }
 

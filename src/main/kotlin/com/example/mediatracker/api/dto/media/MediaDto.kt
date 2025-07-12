@@ -1,7 +1,11 @@
 package com.example.mediatracker.api.dto.media
 
+import com.example.mediatracker.external.dto.MediaDetailsResponse
+
 data class MediaDto(
-    val title: String,
+    val id: Long,
+    val kinopoiskId: Int,
     val type: String,
-    val kinopoiskId: Long,
+    val title: String,
+    val details: MediaDetailsResponse
 )
